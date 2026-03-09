@@ -32,6 +32,7 @@ def event_list(request):
     events = Event.objects.all().order_by('-event_date')
     return render(request, 'events/event_list.html', {'events': events})
 
+@login_required(login_url='/admin/login/')
 def upload_attendance(request):
     events = Event.objects.all().order_by('-event_date')
     

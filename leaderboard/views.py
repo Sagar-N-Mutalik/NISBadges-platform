@@ -10,6 +10,9 @@ def get_flexible_column(df, possible_names):
             return col
     return None
 
+from core_accounts.decorators import co_admin_or_higher_required
+
+@co_admin_or_higher_required
 def process_referrals(request):
     if request.method == 'POST':
         file = request.FILES.get('file')
@@ -115,7 +118,7 @@ def badge_eligibility(request):
     
     return render(request, 'leaderboard/badge_eligibility.html', context)
 
-@login_required(login_url='/admin/login/')
+@co_admin_or_higher_required
 def assign_badges(request):
     if request.method == 'POST':
         event_name = request.POST.get('event_name')
@@ -159,7 +162,7 @@ def assign_badges(request):
 import csv
 from django.http import HttpResponse
 
-@login_required(login_url='/admin/login/')
+@co_admin_or_higher_required
 def export_badges_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="nisbadges_winners.csv"'

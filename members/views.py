@@ -24,6 +24,9 @@ def clean_name(name):
     # Trim spaces
     return name.strip()
 
+from core_accounts.decorators import main_admin_required
+
+@main_admin_required
 def upload_members(request):
     if request.method == 'POST':
         file = request.FILES.get('file')

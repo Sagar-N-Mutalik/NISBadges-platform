@@ -19,7 +19,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', include('core_accounts.urls')),         # Login and authentication flow
+    path('', include('core_accounts.urls')),         # Login and authentication flow
     path('dashboard/', include('members.urls')), # Members database
     path('events/', include('events.urls')),     # Event management & attendance
     path('leaderboard/', include('leaderboard.urls')), # Rankings & badge eligibility

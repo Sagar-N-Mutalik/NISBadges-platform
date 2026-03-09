@@ -58,10 +58,12 @@
             <i class="bi bi-house-door me-2"></i> Dashboard
         </a>
 
+        {% if request.user.role == 'main_admin' %}
         <a href="{% url 'upload_members' %}"
             class="{% if request.resolver_match.url_name == 'upload_members' %}active{% endif %}">
             <i class="bi bi-people me-2"></i> Members Database
         </a>
+        {% endif %}
 
         <div class="pt-2 pb-1 px-3 text-uppercase text-muted" style="font-size: 0.8em; font-weight: bold;">Events</div>
         <div class="submenu">
@@ -79,10 +81,12 @@
 
         <div class="pt-3 pb-1 px-3 text-uppercase text-muted" style="font-size: 0.8em; font-weight: bold;">Processing &
             Ranks</div>
+        {% if request.user.role in 'main_admin,co_admin' %}
         <a href="{% url 'process_referrals' %}"
             class="{% if request.resolver_match.url_name == 'process_referrals' %}active{% endif %}">
             <i class="bi bi-person-plus me-2"></i> Referral Processing
         </a>
+        {% endif %}
         <a href="{% url 'view_leaderboard' %}"
             class="{% if request.resolver_match.url_name == 'view_leaderboard' %}active{% endif %}">
             <i class="bi bi-trophy me-2"></i> Leaderboard
@@ -91,15 +95,19 @@
             class="{% if request.resolver_match.url_name == 'badge_eligibility' %}active{% endif %}">
             <i class="bi bi-award me-2"></i> Badge Eligibility
         </a>
+        {% if request.user.role in 'main_admin,co_admin' %}
         <a href="{% url 'assign_badges' %}"
             class="{% if request.resolver_match.url_name == 'assign_badges' %}active{% endif %}">
             <i class="bi bi-patch-check me-2"></i> Assign Badges
         </a>
+        {% endif %}
 
+        {% if request.user.role == 'main_admin' %}
         <div class="pt-3 pb-1 px-3 text-uppercase text-muted" style="font-size: 0.8em; font-weight: bold;">System</div>
         <a href="/admin/">
             <i class="bi bi-gear me-2"></i> Admin Settings
         </a>
+        {% endif %}
     </div>
 
     <div class="content-area">
