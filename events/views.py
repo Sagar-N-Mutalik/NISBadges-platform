@@ -1,8 +1,10 @@
 import pandas as pd
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Event, Attendance
 from members.models import IEEEMember
+from .forms import EventForm
 
 def get_flexible_column(df, possible_names):
     """Matches dataframe columns against a list of possible variations."""
@@ -10,6 +12,25 @@ def get_flexible_column(df, possible_names):
         if str(col).strip().lower() in possible_names:
             return col
     return None
+
+@login_required(login_url='/admin/login/')
+def create_event(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.created_by = request.user
+            event.save()
+            messages.success(request, "Event created successfully!")
+            return redirect('event_list')
+    else:
+        form = EventForm()
+    return render(request, 'events/create_event.html', {'form': form})
+
+@login_required(login_url='/admin/login/')
+def event_list(request):
+    events = Event.objects.all().order_by('-event_date')
+    return render(request, 'events/event_list.html', {'events': events})
 
 def upload_attendance(request):
     events = Event.objects.all().order_by('-event_date')

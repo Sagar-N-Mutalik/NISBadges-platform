@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Assign Badges | NISBadges Platform{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Automated Badge Assignment</h2>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="alert alert-info">
+                <h5 class="alert-heading"><i class="bi bi-info-circle-fill me-2"></i>Tier Rules</h5>
+                <p class="mb-0">Badges are automatically awarded to the top members based on the current leaderboard
+                    standings:</p>
+                <ul class="mb-0 mt-2">
+                    <li><strong>Prime Badge:</strong> Top 5 members</li>
+                    <li><strong>Elite Badge:</strong> Top 10 members</li>
+                    <li><strong>Pro Badge:</strong> Top 20 members</li>
+                </ul>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-award-fill me-2"></i>Assign Badges to Top Members</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="event_name" class="form-label">Event Name</label>
+                            <input type="text" class="form-control" id="event_name" name="event_name" required
+                                placeholder="e.g., Inspiro">
+                            <div class="form-text">The name of the event for which badges are being awarded.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="badge_type" class="form-label">Select Badge Type</label>
+                            <select class="form-select" id="badge_type" name="badge_type" required>
+                                <option value="" disabled selected>Select a tier...</option>
+                                <option value="Prime">Prime Badge (Top 5)</option>
+                                <option value="Elite">Elite Badge (Top 10)</option>
+                                <option value="Pro">Pro Badge (Top 20)</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'dashboard_home' %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i> Award Badges
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

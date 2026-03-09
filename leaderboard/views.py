@@ -93,6 +93,9 @@ def view_leaderboard(request):
     return render(request, 'leaderboard/leaderboard.html', {'leaderboard': leaderboard_data})
 
 
+from django.contrib.auth.decorators import login_required
+from .models import BadgeAward
+
 def badge_eligibility(request):
     """
     Dashboard automatically displays top members for upcoming badge distribution.
@@ -111,3 +114,69 @@ def badge_eligibility(request):
     }
     
     return render(request, 'leaderboard/badge_eligibility.html', context)
+
+@login_required(login_url='/admin/login/')
+def assign_badges(request):
+    if request.method == 'POST':
+        event_name = request.POST.get('event_name')
+        badge_type = request.POST.get('badge_type')
+        
+        if not event_name or not badge_type:
+            messages.error(request, "Please provide an event name and select a badge type.")
+            return redirect('assign_badges')
+            
+        leaderboard = IEEEMember.objects.all().order_by(
+            '-total_points', 
+            '-referral_count', 
+            'last_score_update'
+        )
+        
+        if badge_type == 'Pro':
+            eligible_members = leaderboard[:20]
+        elif badge_type == 'Elite':
+            eligible_members = leaderboard[:10]
+        elif badge_type == 'Prime':
+            eligible_members = leaderboard[:5]
+        else:
+            messages.error(request, "Invalid badge type selected.")
+            return redirect('assign_badges')
+            
+        awarded_count = 0
+        for member in eligible_members:
+            _, created = BadgeAward.objects.get_or_create(
+                member=member,
+                badge_type=badge_type,
+                event_name=event_name
+            )
+            if created:
+                awarded_count += 1
+                
+        messages.success(request, f"Successfully awarded {awarded_count} '{badge_type}' badges for '{event_name}'.")
+        return redirect('assign_badges')
+        
+    return render(request, 'leaderboard/assign_badges.html')
+
+import csv
+from django.http import HttpResponse
+
+@login_required(login_url='/admin/login/')
+def export_badges_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="nisbadges_winners.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Member Name', 'IEEE Number', 'Branch', 'Badge Type', 'Event Name', 'Award Date'])
+
+    badge_awards = BadgeAward.objects.select_related('member').all()
+    
+    for award in badge_awards:
+        writer.writerow([
+            award.member.full_name,
+            award.member.ieee_number,
+            award.member.branch,
+            award.badge_type,
+            award.event_name,
+            award.award_date
+        ])
+
+    return response

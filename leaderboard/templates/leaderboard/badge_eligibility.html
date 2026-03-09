@@ -4,8 +4,13 @@
 
 {% block content %}
 <div class="container-fluid">
-    <h2 class="mb-4 text-center text-dark fw-bold">Badge Eligibility Status</h2>
-    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-dark fw-bold mb-0">Badge Eligibility Status</h2>
+        <a href="{% url 'export_badges_csv' %}" class="btn btn-success shadow-sm">
+            <i class="bi bi-file-earmark-excel me-2"></i>Download Badge Winners (CSV)
+        </a>
+    </div>
+
     <div class="row gap-4">
         <div class="col-md">
             <div class="card shadow-sm border-warning">
@@ -14,10 +19,10 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for member in prime_eligible %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ member.full_name }}
-                            <span class="badge bg-dark rounded-pill">{{ member.total_points }} pts</span>
-                        </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ member.full_name }}
+                        <span class="badge bg-dark rounded-pill">{{ member.total_points }} pts</span>
+                    </li>
                     {% endfor %}
                 </ul>
             </div>
@@ -30,10 +35,10 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for member in elite_eligible %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ member.full_name }}
-                            <span class="badge bg-secondary rounded-pill">{{ member.total_points }} pts</span>
-                        </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ member.full_name }}
+                        <span class="badge bg-secondary rounded-pill">{{ member.total_points }} pts</span>
+                    </li>
                     {% endfor %}
                 </ul>
             </div>
@@ -46,10 +51,10 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for member in pro_eligible %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ member.full_name }}
-                            <span class="badge bg-info rounded-pill">{{ member.total_points }} pts</span>
-                        </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ member.full_name }}
+                        <span class="badge bg-info rounded-pill">{{ member.total_points }} pts</span>
+                    </li>
                     {% endfor %}
                 </ul>
             </div>
