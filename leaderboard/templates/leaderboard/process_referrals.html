@@ -1,44 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Process Referrals</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
-            <div class="card-header bg-warning text-dark">
-                <h4 class="mb-0">Process Membership Referrals</h4>
-            </div>
-            <div class="card-body">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+{% extends 'base.html' %}
 
-                <div class="alert alert-info">
-                    <strong>Rule:</strong> Valid referrals automatically award the referrer <strong>50 points</strong>.
-                </div>
+{% block title %}NISBadges - Process Referrals{% endblock %}
 
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="file" class="form-label">Membership Registration Form (CSV/Excel)</label>
-                        <input class="form-control" type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
-                        <div class="form-text">The system will look for a column named 'Referral IEEE' or 'Referred By'.</div>
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">Process Membership Referrals</h4>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    
-                    <button type="submit" class="btn btn-warning w-100 fw-bold">Process Referrals</button>
-                </form>
+                {% endfor %}
+            {% endif %}
+
+            <div class="alert alert-info">
+                <strong>Rule:</strong> Valid referrals automatically award the referrer <strong>50 points</strong>.
             </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="file" class="form-label">Membership Registration Form (CSV/Excel)</label>
+                    <input class="form-control" type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
+                    <div class="form-text">The system will look for a column named 'Referral IEEE' or 'Referred By'.</div>
+                </div>
+                
+                <button type="submit" class="btn btn-warning w-100 fw-bold">Process Referrals</button>
+            </form>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}

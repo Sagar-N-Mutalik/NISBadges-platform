@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}NISBadges - Badge Eligibility{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4 text-center text-dark fw-bold">Badge Eligibility Status</h2>
+    
+    <div class="row gap-4">
+        <div class="col-md">
+            <div class="card shadow-sm border-warning">
+                <div class="card-header bg-warning text-dark fw-bold text-center">
+                    Tier 1: Prime Badge (Top 5)
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for member in prime_eligible %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ member.full_name }}
+                            <span class="badge bg-dark rounded-pill">{{ member.total_points }} pts</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card shadow-sm border-secondary">
+                <div class="card-header bg-secondary text-white fw-bold text-center">
+                    Tier 2: Elite Badge (Top 10)
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for member in elite_eligible %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ member.full_name }}
+                            <span class="badge bg-secondary rounded-pill">{{ member.total_points }} pts</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card shadow-sm border-info">
+                <div class="card-header bg-info text-white fw-bold text-center">
+                    Tier 3: Pro Badge (Top 20)
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for member in pro_eligible %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ member.full_name }}
+                            <span class="badge bg-info rounded-pill">{{ member.total_points }} pts</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

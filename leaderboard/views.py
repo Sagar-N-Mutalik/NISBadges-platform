@@ -76,3 +76,38 @@ def process_referrals(request):
         return redirect('process_referrals')
 
     return render(request, 'leaderboard/process_referrals.html')
+# ... (keep your existing process_referrals function at the top) ...
+
+def view_leaderboard(request):
+    """
+    Ranks members based on points.
+    Tie-Breaker 1: Higher referral count wins.
+    Tie-Breaker 2: Whoever reached the score first (last_score_update ASC) ranks higher.
+    """
+    leaderboard_data = IEEEMember.objects.all().order_by(
+        '-total_points', 
+        '-referral_count', 
+        'last_score_update'
+    )
+    
+    return render(request, 'leaderboard/leaderboard.html', {'leaderboard': leaderboard_data})
+
+
+def badge_eligibility(request):
+    """
+    Dashboard automatically displays top members for upcoming badge distribution.
+    """
+    leaderboard_data = IEEEMember.objects.all().order_by(
+        '-total_points', 
+        '-referral_count', 
+        'last_score_update'
+    )
+    
+    # Slice the querysets for the specific tiers
+    context = {
+        'prime_eligible': leaderboard_data[:5],   # Top 5
+        'elite_eligible': leaderboard_data[:10],  # Top 10
+        'pro_eligible': leaderboard_data[:20],    # Top 20
+    }
+    
+    return render(request, 'leaderboard/badge_eligibility.html', context)

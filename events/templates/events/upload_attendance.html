@@ -1,50 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Upload Event Attendance</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Upload Event Attendance</h4>
-            </div>
-            <div class="card-body">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+{% extends 'base.html' %}
 
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="event" class="form-label">Select Event</label>
-                        <select class="form-select" id="event" name="event" required>
-                            <option value="">-- Choose an Event --</option>
-                            {% for event in events %}
-                                <option value="{{ event.id }}">{{ event.name }} ({{ event.event_date }}) - {{ event.final_points }} pts</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+{% block title %}NISBadges - Upload Attendance{% endblock %}
 
-                    <div class="mb-3">
-                        <label for="file" class="form-label">Google Forms Attendance Sheet (CSV/Excel)</label>
-                        <input class="form-control" type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
-                        <div class="form-text">The system will automatically detect variations of 'IEEE Number' and 'Are you IEEE member?' columns.</div>
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Upload Event Attendance</h4>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    
-                    <button type="submit" class="btn btn-success w-100">Process Attendance</button>
-                </form>
-            </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="event" class="form-label">Select Event</label>
+                    <select class="form-select" id="event" name="event" required>
+                        <option value="">-- Choose an Event --</option>
+                        {% for event in events %}
+                            <option value="{{ event.id }}">{{ event.name }} ({{ event.event_date }}) - {{ event.final_points }} pts</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="file" class="form-label">Google Forms Attendance Sheet (CSV/Excel)</label>
+                    <input class="form-control" type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
+                    <div class="form-text">The system will automatically detect variations of 'IEEE Number' and 'Are you IEEE member?' columns.</div>
+                </div>
+                
+                <button type="submit" class="btn btn-success w-100">Process Attendance</button>
+            </form>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}
