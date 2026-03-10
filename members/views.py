@@ -24,14 +24,15 @@ def clean_name(name):
     # Trim spaces
     return name.strip()
 
-from core_accounts.decorators import main_admin_required
+from core_accounts.decorators import main_admin_required, allowed_roles
 from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
 def dashboard_home(request):
     return render(request, 'members/dashboard_home.html')
 
-@main_admin_required
+@login_required(login_url='login')
+@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def upload_members(request):
     if request.method == 'POST':
         file = request.FILES.get('file')

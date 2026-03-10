@@ -1,134 +1,379 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-:root {
-    /* Global Foundation */
-    --font-primary: 'Outfit', sans-serif;
+/* ============================================================
+   NISBADGES DESIGN SYSTEM — custom.css
+   v3 — Bigger fonts, white text in dark mode, premium look
+   ============================================================ */
 
-    /* Modern Color Palette */
-    --bg-light: #f8fafc;
-    --sidebar-bg: #0f172a;
+:root {
+    --font-primary: 'Outfit', sans-serif;
+    --bg-light: #f1f5f9;
     --primary-accent: #3b82f6;
-    /* Deep logic blue */
     --secondary-accent: #8b5cf6;
-    /* Electric purple */
     --gold: #f59e0b;
     --silver: #94a3b8;
     --bronze: #b45309;
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+    --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06);
+}
 
-    --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --hover-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+/* ============================================================
+   BASE & TYPOGRAPHY
+   ============================================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
 }
 
 body {
     font-family: var(--font-primary) !important;
     background-color: var(--bg-light) !important;
-    color: #334155;
+    color: #1e293b;
+    font-size: 1.05rem;
+    line-height: 1.7;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-primary) !important;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+p {
+    font-size: 1rem;
+    color: #475569;
+}
+
+small,
+.small {
+    font-size: 0.9rem !important;
+}
+
+.text-muted {
+    color: #64748b !important;
+    font-size: 0.95rem;
+}
+
+strong {
+    color: #1e293b;
+}
+
+/* Gradient text utility */
+.gradient-text {
+    background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline;
+}
+
+/* Section title — dark/light safe */
+.page-section-title {
+    color: #0f172a !important;
+    font-size: 1.05rem;
+}
+
+/* ============================================================
+   DARK MODE — COMPREHENSIVE WHITE TEXT OVERRIDE
+   ============================================================ */
 [data-theme="dark"] body {
     background-color: #020617 !important;
+    color: #e2e8f0 !important;
+}
+
+/* All headings → bright white */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] .page-section-title {
+    color: #f8fafc !important;
+}
+
+/* Body copy → near-white */
+[data-theme="dark"] p {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] strong {
+    color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] small,
+[data-theme="dark"] .small {
+    color: #94a3b8 !important;
+}
+
+/* Muted text → softer white */
+[data-theme="dark"] .text-muted {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .text-dark {
+    color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .lead {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .fw-semibold,
+[data-theme="dark"] .fw-bold,
+[data-theme="dark"] .fw-medium {
     color: #f1f5f9;
 }
 
-/* 1. Global Cards Override */
+/* Links */
+[data-theme="dark"] a:not(.btn):not(.sidebar a) {
+    color: #93c5fd;
+}
+
+/* Form labels, help text */
+[data-theme="dark"] .form-label {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .form-text {
+    color: #64748b !important;
+}
+
+[data-theme="dark"] label {
+    color: #cbd5e1 !important;
+}
+
+/* Tables */
+[data-theme="dark"] .table {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .table th {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .table td {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .table-hover tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* List items */
+[data-theme="dark"] .list-group-item {
+    background: transparent !important;
+    color: #e2e8f0 !important;
+    border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* Dividers */
+[data-theme="dark"] hr {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Badges / pills */
+[data-theme="dark"] .badge {
+    opacity: 0.95;
+}
+
+/* Alerts */
+[data-theme="dark"] .alert {
+    color: #f1f5f9 !important;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
 .card,
 .glass-panel {
     border-radius: 16px !important;
     border: none !important;
     box-shadow: var(--card-shadow) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #ffffff;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .card:hover:not(.no-hover) {
-    box-shadow: var(--hover-shadow) !important;
+    box-shadow: var(--card-shadow-hover) !important;
+    transform: translateY(-2px);
 }
 
-[data-theme="dark"] .card {
+.card-header {
+    background: transparent !important;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .glass-panel {
     background-color: #0f172a !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
-/* 2. Sidebar Navigation */
+/* ============================================================
+   SIDEBAR — Bigger, bolder, white in dark
+   ============================================================ */
 .sidebar {
+    background: #ffffff !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    transition: background-color 0.3s ease;
+    min-width: 240px;
+    padding: 20px 0;
+}
+
+[data-theme="dark"] .sidebar {
     background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
-    color: #e2e8f0;
     border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.sidebar a {
+/* Sidebar brand heading */
+.sidebar h4 {
+    font-size: 1.3rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    padding: 0 20px;
+}
+
+[data-theme="dark"] .sidebar h4 {
+    color: #f8fafc !important;
+}
+
+/* Section labels (e.g. "Events", "Processing & Ranks") */
+.sidebar .text-muted {
+    font-size: 0.78rem !important;
+    letter-spacing: 1.5px !important;
+    font-weight: 700 !important;
     color: #94a3b8 !important;
-    transition: all 0.3s ease !important;
-    border-radius: 12px !important;
-    margin: 4px 12px;
+}
+
+[data-theme="dark"] .sidebar .text-muted {
+    color: #475569 !important;
+}
+
+/* Nav links — BIGGER */
+.sidebar a {
+    display: flex;
+    align-items: center;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    color: #334155 !important;
+    padding: 10px 16px !important;
+    border-radius: 10px !important;
+    margin: 2px 10px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
 }
 
 .sidebar a:hover {
-    color: #ffffff !important;
-    transform: translateX(4px);
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--primary-accent) !important;
+    background-color: rgba(59, 130, 246, 0.08) !important;
+    transform: translateX(3px);
 }
 
 .sidebar a.active {
-    background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent)) !important;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.06)) !important;
+    color: var(--primary-accent) !important;
+    font-weight: 700 !important;
+    border-left: 3px solid var(--primary-accent);
+    padding-left: 13px !important;
+}
+
+[data-theme="dark"] .sidebar a {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .sidebar a:hover {
     color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.07) !important;
 }
 
+[data-theme="dark"] .sidebar a.active {
+    color: #93c5fd !important;
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-left-color: #60a5fa;
+}
+
+/* Submenu links slightly smaller */
 .sidebar .submenu a {
-    padding-left: 20px;
-    font-size: 0.9em;
+    font-size: 0.95rem !important;
+    padding-left: 36px !important;
+    color: #475569 !important;
 }
 
-/* 3. Leaderboard Styles */
+[data-theme="dark"] .sidebar .submenu a {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .sidebar .submenu a:hover {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .sidebar .submenu a.active {
+    color: #93c5fd !important;
+}
+
+/* ============================================================
+   LEADERBOARD TABLE
+   ============================================================ */
 .leaderboard-table {
     border-collapse: separate;
-    border-spacing: 0 10px;
-    /* Space between rows */
+    border-spacing: 0 8px;
 }
 
-.leaderboard-table th,
+.leaderboard-table th {
+    border: none !important;
+    background: transparent;
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #64748b;
+}
+
 .leaderboard-table td {
     border: none !important;
     padding: 16px 20px;
     vertical-align: middle;
+    font-size: 1rem;
 }
 
 .leaderboard-table tbody tr {
     background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     border-radius: 12px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .leaderboard-table tbody tr:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .leaderboard-table th {
+    color: #64748b !important;
+}
+
+[data-theme="dark"] .leaderboard-table td {
+    color: #e2e8f0 !important;
 }
 
 [data-theme="dark"] .leaderboard-table tbody tr {
     background-color: #1e293b;
 }
 
-/* Base styling for rank cells */
 .rank-cell {
     font-weight: 800;
-    font-size: 1.2rem;
-}
-
-/* Ranks colors and glowing effects */
-.rank-1 .rank-cell {
-    color: var(--gold);
-    text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
-}
-
-.rank-2 .rank-cell {
-    color: var(--silver);
-    text-shadow: 0 0 10px rgba(148, 163, 184, 0.4);
-}
-
-.rank-3 .rank-cell {
-    color: var(--bronze);
-    text-shadow: 0 0 10px rgba(180, 83, 9, 0.4);
+    font-size: 1.15rem;
 }
 
 .rank-1 {
@@ -143,81 +388,136 @@ body {
     border-left: 4px solid var(--bronze) !important;
 }
 
-/* Modern Badges (Pills) */
+.rank-1 .rank-cell {
+    color: var(--gold);
+    text-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+}
+
+.rank-2 .rank-cell {
+    color: var(--silver);
+    text-shadow: 0 0 12px rgba(148, 163, 184, 0.4);
+}
+
+.rank-3 .rank-cell {
+    color: var(--bronze);
+    text-shadow: 0 0 12px rgba(180, 83, 9, 0.4);
+}
+
+.rank-gold {
+    color: var(--gold) !important;
+    font-weight: 800;
+}
+
+.rank-silver {
+    color: var(--silver) !important;
+    font-weight: 800;
+}
+
+.rank-bronze {
+    color: var(--bronze) !important;
+    font-weight: 800;
+}
+
+/* ============================================================
+   PILL BADGES
+   ============================================================ */
 .pill-badge {
-    padding: 6px 12px;
+    display: inline-block;
+    padding: 5px 14px;
     border-radius: 50rem;
     font-weight: 600;
     font-size: 0.85rem;
-    display: inline-block;
     background: rgba(59, 130, 246, 0.1);
     color: var(--primary-accent);
+    white-space: nowrap;
 }
 
 .pill-badge-gold {
-    background: rgba(245, 158, 11, 0.1);
+    background: rgba(245, 158, 11, 0.12);
     color: var(--gold);
 }
 
-/* 4. Data Entry & Form Styles */
+/* ============================================================
+   FORMS — Bigger, clearer
+   ============================================================ */
 .form-control,
 .form-select {
-    padding: 12px 16px;
+    padding: 13px 18px;
     border-radius: 10px;
-    border: 1px solid #e2e8f0;
+    border: 1.5px solid #e2e8f0;
     transition: all 0.2s ease;
-    font-size: 1rem;
+    font-size: 1rem !important;
+    font-family: var(--font-primary) !important;
+    background-color: #fff;
+    color: #1e293b;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    outline: none;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 1rem !important;
+    color: #334155;
+    margin-bottom: 8px;
 }
 
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select {
     background-color: #1e293b !important;
     border-color: #334155 !important;
-    color: #f8fafc !important;
+    color: #f1f5f9 !important;
 }
 
 [data-theme="dark"] .form-control::placeholder,
 [data-theme="dark"] .form-select::placeholder {
-    color: #94a3b8 !important;
+    color: #64748b !important;
 }
 
 [data-theme="dark"] .form-control:focus,
 [data-theme="dark"] .form-select:focus {
     border-color: var(--primary-accent) !important;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25) !important;
-    color: #f8fafc !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2) !important;
 }
 
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--primary-accent);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-}
-
-/* Drag and Drop Zone */
+/* ============================================================
+   DRAG & DROP ZONE
+   ============================================================ */
+.drag-drop-zone,
 .file-upload-zone {
     border: 2px dashed #cbd5e1;
-    border-radius: 16px;
-    padding: 40px;
+    border-radius: 14px;
+    padding: 52px 32px;
     text-align: center;
     background-color: #f8fafc;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     position: relative;
     overflow: hidden;
 }
 
+[data-theme="dark"] .drag-drop-zone,
 [data-theme="dark"] .file-upload-zone {
-    background-color: rgba(15, 23, 42, 0.5);
+    background-color: rgba(15, 23, 42, 0.6);
     border-color: #334155;
 }
 
+.drag-drop-zone:hover,
 .file-upload-zone:hover {
     border-color: var(--primary-accent);
-    background-color: rgba(59, 130, 246, 0.05);
+    background-color: rgba(59, 130, 246, 0.04);
 }
 
-.file-upload-zone input[type="file"] {
+[data-theme="dark"] .drag-drop-zone:hover,
+[data-theme="dark"] .file-upload-zone:hover {
+    background-color: rgba(59, 130, 246, 0.08);
+}
+
+.file-hidden-input {
     position: absolute;
     top: 0;
     left: 0;
@@ -236,32 +536,115 @@ body {
 .file-upload-text {
     font-size: 1.1rem;
     color: #475569;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* Gradient Buttons */
+[data-theme="dark"] .file-upload-text {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .drag-drop-zone p,
+[data-theme="dark"] .file-upload-zone p {
+    color: #cbd5e1 !important;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+    font-family: var(--font-primary) !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    transition: all 0.2s ease !important;
+    font-size: 1rem !important;
+    padding: 11px 24px !important;
+    letter-spacing: 0.2px;
+}
+
 .btn-gradient {
     background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    color: white !important;
+    border: none !important;
 }
 
 .btn-gradient:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
-    color: white;
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3) !important;
+    color: white !important;
 }
 
-/* 5. Login Spectacular Styles */
+/* ============================================================
+   STANDARD TABLE (event list, members etc.)
+   ============================================================ */
+.table {
+    font-size: 1rem;
+}
+
+.table th {
+    font-size: 0.8rem !important;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+.table td {
+    font-size: 1rem;
+    vertical-align: middle;
+    padding: 14px 16px !important;
+}
+
+.table> :not(caption)>*>* {
+    background: transparent !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.04) !important;
+}
+
+[data-theme="dark"] .table th {
+    color: #64748b !important;
+}
+
+[data-theme="dark"] .table td {
+    color: #e2e8f0 !important;
+}
+
+/* ============================================================
+   ALERTS
+   ============================================================ */
+.alert {
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+[data-theme="dark"] .alert {
+    color: #f1f5f9 !important;
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.content-area {
+    font-size: 1rem;
+}
+
+[data-theme="dark"] #live-clock {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .border-bottom {
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ============================================================
+   LOGIN PAGE
+   ============================================================ */
 .login-body {
     background: radial-gradient(circle at top right, #3b82f640, transparent 40%),
-        radial-gradient(circle at bottom left, #8b5cf640, transparent 40%),
-        #0f172a !important;
-    /* Mesh dark background */
+        radial-gradient(circle at bottom left, #8b5cf640, transparent 40%), #0f172a !important;
 }
 
 .login-glass-card {
@@ -294,6 +677,6 @@ body {
     border-right: none !important;
 }
 
-.login-glass-card .form-control {
+.login-glass-card .form-control:last-child {
     border-left: none !important;
 }

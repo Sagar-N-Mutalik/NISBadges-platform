@@ -1,64 +1,185 @@
 {% extends 'base.html' %}
 
-{% block title %}NISBadges - Badge Eligibility{% endblock %}
+{% block title %}Badge Eligibility | NISBadges Platform{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-dark fw-bold mb-0">Badge Eligibility Status</h2>
-        <a href="{% url 'export_badges_csv' %}" class="btn btn-success shadow-sm">
-            <i class="bi bi-file-earmark-excel me-2"></i>Download Badge Winners (CSV)
-        </a>
+<div class="container-fluid py-2">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <p class="text-muted small text-uppercase fw-semibold mb-1" style="letter-spacing:2px;">Gamification</p>
+            <h2 class="fw-bolder mb-0" style="letter-spacing:-0.5px;font-size:2rem;">
+                <i class="bi bi-award-fill me-2" style="color:var(--secondary-accent);"></i>Badge Eligibility
+            </h2>
+        </div>
+        {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'export_badges_csv' %}" class="btn btn-outline-success rounded-pill px-4">
+                <i class="bi bi-file-earmark-excel me-2"></i>Export CSV
+            </a>
+            <a href="{% url 'assign_badges' %}" class="btn btn-gradient rounded-pill px-4 shadow-sm">
+                <i class="bi bi-patch-check me-2"></i>Assign Badges
+            </a>
+        </div>
+        {% endif %}
     </div>
 
-    <div class="row gap-4">
-        <div class="col-md">
-            <div class="card glass-panel shadow-sm border-warning">
-                <div class="card-header border-bottom-0 pt-3 pb-0 text-dark fw-bold text-center">
-                    Tier 1: Prime Badge (Top 5)
+    <!-- Tier Info Bar -->
+    <div class="card glass-panel border-0 p-4 mb-5">
+        <div class="row g-3 text-center">
+            <div class="col-md-4">
+                <div class="d-flex align-items-center justify-content-center gap-3">
+                    <span class="fs-2">🏆</span>
+                    <div class="text-start">
+                        <h6 class="fw-bold mb-0" style="color:var(--gold);">Prime Badge</h6>
+                        <p class="text-muted small mb-0">Top 5 members on leaderboard</p>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    {% for member in prime_eligible %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ member.full_name }}
-                        <span class="pill-badge pill-badge-gold">{{ member.total_points }} pts</span>
-                    </li>
-                    {% endfor %}
-                </ul>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center justify-content-center gap-3">
+                    <span class="fs-2">🥈</span>
+                    <div class="text-start">
+                        <h6 class="fw-bold mb-0" style="color:var(--silver);">Elite Badge</h6>
+                        <p class="text-muted small mb-0">Top 10 members on leaderboard</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex align-items-center justify-content-center gap-3">
+                    <span class="fs-2">🥉</span>
+                    <div class="text-start">
+                        <h6 class="fw-bold mb-0" style="color:var(--bronze);">Pro Badge</h6>
+                        <p class="text-muted small mb-0">Top 20 members on leaderboard</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tier Cards -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+        <!-- Prime Tier -->
+        <div class="col">
+            <div class="card glass-panel border-0 h-100" style="border-top:4px solid var(--gold) !important;">
+                <div class="card-header border-0 pt-4 px-4 pb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-4">🏆</span>
+                        <div>
+                            <h5 class="fw-bold mb-0" style="color:var(--gold);">Prime Tier</h5>
+                            <small class="text-muted">Top 5 Members</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for member in prime_eligible %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-4 py-3"
+                            style="border-top:1px solid rgba(0,0,0,0.05) !important;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
+                                    style="width:36px;height:36px;font-size:0.85rem;background:linear-gradient(135deg,#f59e0b,#d97706);">
+                                    {{ forloop.counter }}</div>
+                                <span class="fw-semibold" style="font-size:1rem;">{{ member.full_name }}</span>
+                            </div>
+                            <span class="pill-badge pill-badge-gold">{{ member.total_points }} pts</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item border-0 text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>No eligible members yet.
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <div class="col-md">
-            <div class="card glass-panel shadow-sm border-secondary">
-                <div class="card-header border-bottom-0 pt-3 pb-0 text-white fw-bold text-center">
-                    Tier 2: Elite Badge (Top 10)
+        <!-- Elite Tier -->
+        <div class="col">
+            <div class="card glass-panel border-0 h-100" style="border-top:4px solid var(--silver) !important;">
+                <div class="card-header border-0 pt-4 px-4 pb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-4">🥈</span>
+                        <div>
+                            <h5 class="fw-bold mb-0" style="color:var(--silver);">Elite Tier</h5>
+                            <small class="text-muted">Top 10 Members</small>
+                        </div>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    {% for member in elite_eligible %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ member.full_name }}
-                        <span class="pill-badge">{{ member.total_points }} pts</span>
-                    </li>
-                    {% endfor %}
-                </ul>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for member in elite_eligible %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-4 py-3"
+                            style="border-top:1px solid rgba(0,0,0,0.05) !important;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
+                                    style="width:36px;height:36px;font-size:0.85rem;background:linear-gradient(135deg,#94a3b8,#64748b);">
+                                    {{ forloop.counter }}</div>
+                                <span class="fw-semibold" style="font-size:1rem;">{{ member.full_name }}</span>
+                            </div>
+                            <span class="pill-badge" style="background:rgba(148,163,184,0.15);color:var(--silver);">{{
+                                member.total_points }} pts</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item border-0 text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>No eligible members yet.
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <div class="col-md">
-            <div class="card glass-panel shadow-sm border-info">
-                <div class="card-header border-bottom-0 pt-3 pb-0 text-white fw-bold text-center">
-                    Tier 3: Pro Badge (Top 20)
+        <!-- Pro Tier -->
+        <div class="col">
+            <div class="card glass-panel border-0 h-100" style="border-top:4px solid var(--bronze) !important;">
+                <div class="card-header border-0 pt-4 px-4 pb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-4">🥉</span>
+                        <div>
+                            <h5 class="fw-bold mb-0" style="color:var(--bronze);">Pro Tier</h5>
+                            <small class="text-muted">Top 20 Members</small>
+                        </div>
+                    </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    {% for member in pro_eligible %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ member.full_name }}
-                        <span class="pill-badge">{{ member.total_points }} pts</span>
-                    </li>
-                    {% endfor %}
-                </ul>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for member in pro_eligible %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-4 py-3"
+                            style="border-top:1px solid rgba(0,0,0,0.05) !important;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
+                                    style="width:36px;height:36px;font-size:0.85rem;background:linear-gradient(135deg,#b45309,#92400e);">
+                                    {{ forloop.counter }}</div>
+                                <span class="fw-semibold" style="font-size:1rem;">{{ member.full_name }}</span>
+                            </div>
+                            <span class="pill-badge" style="background:rgba(180,83,9,0.12);color:var(--bronze);">{{
+                                member.total_points }} pts</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item border-0 text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>No eligible members yet.
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    [data-theme="dark"] .list-group-item {
+        background: transparent !important;
+        color: #e2e8f0 !important;
+        border-top-color: rgba(255, 255, 255, 0.06) !important;
+    }
+
+    [data-theme="dark"] h5,
+    [data-theme="dark"] h2 {
+        color: #f1f5f9 !important;
+    }
+</style>
 {% endblock %}

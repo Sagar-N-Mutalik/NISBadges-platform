@@ -30,38 +30,44 @@
 
 <body class="d-flex flex-row">
 
-    <div class="sidebar glass-panel shadow-sm">
-        <h4 class="text-center fw-bold mb-4">NISBadges</h4>
+    <div class="sidebar d-flex flex-column" style="width:240px;min-height:100vh;">
+        <h4 class="fw-bolder mb-4 px-4 pt-4" style="font-size:1.4rem;letter-spacing:-0.5px;">NISBadges</h4>
 
         <a href="{% url 'dashboard_home' %}"
             class="{% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">
             <i class="bi bi-house-door me-2"></i> Dashboard
         </a>
 
-        {% if request.user.role == 'main_admin' %}
+        {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
         <a href="{% url 'upload_members' %}"
             class="{% if request.resolver_match.url_name == 'upload_members' %}active{% endif %}">
             <i class="bi bi-people me-2"></i> Members Database
         </a>
         {% endif %}
 
-        <div class="pt-2 pb-1 px-3 text-uppercase text-muted" style="font-size: 0.8em; font-weight: bold;">Events</div>
+        <div class="pt-3 pb-1 px-4 text-uppercase text-muted"
+            style="font-size:0.72rem;font-weight:800;letter-spacing:2px;">Events</div>
         <div class="submenu">
+            {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
             <a href="{% url 'create_event' %}"
                 class="{% if request.resolver_match.url_name == 'create_event' %}active{% endif %}"><i
                     class="bi bi-plus-circle me-2"></i> Create Event</a>
+            {% endif %}
             <a href="{% url 'event_list' %}"
                 class="{% if request.resolver_match.url_name == 'event_list' %}active{% endif %}"><i
                     class="bi bi-calendar-event me-2"></i> Event List</a>
+            {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
             <a href="{% url 'upload_attendance' %}"
                 class="{% if request.resolver_match.url_name == 'upload_attendance' %}active{% endif %}">
                 <i class="bi bi-file-earmark-spreadsheet me-2"></i> Attendance Upload
             </a>
+            {% endif %}
         </div>
 
-        <div class="pt-3 pb-1 px-3 text-uppercase text-muted" style="font-size: 0.8em; font-weight: bold;">Processing &
+        <div class="pt-4 pb-1 px-4 text-uppercase text-muted"
+            style="font-size:0.72rem;font-weight:800;letter-spacing:2px;">Processing &amp;
             Ranks</div>
-        {% if request.user.role in 'main_admin,co_admin' %}
+        {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
         <a href="{% url 'process_referrals' %}"
             class="{% if request.resolver_match.url_name == 'process_referrals' %}active{% endif %}">
             <i class="bi bi-person-plus me-2"></i> Referral Processing
@@ -75,15 +81,16 @@
             class="{% if request.resolver_match.url_name == 'badge_eligibility' %}active{% endif %}">
             <i class="bi bi-award me-2"></i> Badge Eligibility
         </a>
-        {% if request.user.role in 'main_admin,co_admin' %}
+        {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
         <a href="{% url 'assign_badges' %}"
             class="{% if request.resolver_match.url_name == 'assign_badges' %}active{% endif %}">
             <i class="bi bi-patch-check me-2"></i> Assign Badges
         </a>
         {% endif %}
 
-        {% if request.user.role == 'main_admin' %}
-        <div class="pt-3 pb-1 px-3 text-uppercase text-muted" style="font-size: 0.8em; font-weight: bold;">System</div>
+        {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
+        <div class="pt-4 pb-1 px-4 text-uppercase text-muted"
+            style="font-size:0.72rem;font-weight:800;letter-spacing:2px;">System</div>
         <a href="/admin/">
             <i class="bi bi-gear me-2"></i> Admin Settings
         </a>
@@ -92,14 +99,14 @@
 
     <div class="content-area">
         <!-- Top Navigation / Header Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-light"
-            style="border-color: rgba(255,255,255,0.1) !important;">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom shadow-sm"
+            style="border-color: rgba(0,0,0,0.05) !important;">
             <h5 class="mb-0 fw-bold text-dark d-none d-md-block pe-3" id="page-title">
                 <!-- Can be populated dynamically if needed -->
             </h5>
             <div class="d-flex justify-content-end align-items-center gap-3 w-100">
                 <div class="glass-panel px-4 py-2 rounded-pill d-flex align-items-center fw-medium shadow-sm"
-                    style="font-size: 0.95rem;">
+                    style="font-size: 1.1rem;">
                     <i class="bi bi-clock me-2 text-primary"></i>
                     <span id="live-clock">Loading time...</span>
                 </div>

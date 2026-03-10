@@ -10,9 +10,11 @@ def get_flexible_column(df, possible_names):
             return col
     return None
 
-from core_accounts.decorators import co_admin_or_higher_required
+from core_accounts.decorators import allowed_roles, co_admin_or_higher_required
+from django.contrib.auth.decorators import login_required
 
-@co_admin_or_higher_required
+@login_required(login_url='/admin/login/')
+@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def process_referrals(request):
     if request.method == 'POST':
         file = request.FILES.get('file')
@@ -118,7 +120,8 @@ def badge_eligibility(request):
     
     return render(request, 'leaderboard/badge_eligibility.html', context)
 
-@co_admin_or_higher_required
+@login_required(login_url='/admin/login/')
+@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def assign_badges(request):
     if request.method == 'POST':
         event_name = request.POST.get('event_name')

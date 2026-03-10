@@ -13,7 +13,10 @@ def get_flexible_column(df, possible_names):
             return col
     return None
 
+from core_accounts.decorators import allowed_roles
+
 @login_required(login_url='/admin/login/')
+@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -33,6 +36,7 @@ def event_list(request):
     return render(request, 'events/event_list.html', {'events': events})
 
 @login_required(login_url='/admin/login/')
+@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def upload_attendance(request):
     events = Event.objects.all().order_by('-event_date')
     

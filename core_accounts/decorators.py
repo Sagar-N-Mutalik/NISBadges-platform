@@ -36,3 +36,17 @@ def co_admin_or_higher_required(function=None, login_url='/admin/login/'):
     if function:
         return actual_decorator(function)
     return actual_decorator
+
+from django.shortcuts import redirect
+from django.contrib import messages
+
+def allowed_roles(allowed_roles=[]):
+    def decorator(view_func):
+        def wrapper_func(request, *args, **kwargs):
+            if request.user.role in allowed_roles:
+                return view_func(request, *args, **kwargs)
+            else:
+                messages.error(request, 'You do not have permission to access this page.')
+                return redirect('dashboard_home')
+        return wrapper_func
+    return decorator

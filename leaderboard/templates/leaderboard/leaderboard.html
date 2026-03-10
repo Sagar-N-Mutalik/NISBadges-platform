@@ -1,46 +1,132 @@
 {% extends 'base.html' %}
 
-{% block title %}NISBadges - Leaderboard{% endblock %}
+{% block title %}Leaderboard | NISBadges Platform{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h2 class="mb-4 text-primary fw-bold">Official Leaderboard</h2>
-    <div class="card glass-panel shadow-sm border-0">
-        <div class="card-body p-0">
-            <table class="table leaderboard-table mb-0 text-center">
-                <thead>
-                    <tr>
-                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">Rank</th>
-                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">Name</th>
-                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">IEEE
-                            Number</th>
-                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">Points
-                        </th>
-                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">Referrals
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for member in leaderboard %}
-                    <tr
-                        class="{% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">
-                        <td class="rank-cell">#{{ forloop.counter }}</td>
-                        <td class="fw-bold">{{ member.full_name }}</td>
-                        <td class="text-muted">{{ member.ieee_number }}</td>
-                        <td><span class="pill-badge pill-badge-gold">{{ member.total_points }} pts</span></td>
-                        <td><span class="pill-badge">{{ member.referral_count }}</span></td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-muted py-5 text-center">
-                            <i class="bi bi-inbox fs-2 d-block mb-3 text-secondary"></i>
-                            No members found on the leaderboard yet.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="container-fluid py-2">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <p class="text-muted small text-uppercase fw-semibold mb-1" style="letter-spacing:2px;">NISBadges</p>
+            <h2 class="fw-bolder mb-0" style="letter-spacing:-0.5px;font-size:2rem;">
+                <i class="bi bi-trophy-fill me-2" style="color:var(--gold);"></i>Official Leaderboard
+            </h2>
         </div>
     </div>
+
+    <!-- Top 3 Podium Cards -->
+    {% if leaderboard %}
+    <div class="row g-4 mb-5 justify-content-center">
+        {% for member in leaderboard %}
+        {% if forloop.counter <= 3 %} <div class="col-md-4">
+            <div
+                class="card glass-panel border-0 p-4 text-center position-relative overflow-hidden
+                {% if forloop.counter == 1 %}podium-gold{% elif forloop.counter == 2 %}podium-silver{% else %}podium-bronze{% endif %}">
+                <div class="podium-rank-badge">
+                    {% if forloop.counter == 1 %}🏆{% elif forloop.counter == 2 %}🥈{% else %}🥉{% endif %}
+                </div>
+                <div class="mb-3 mt-2">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle fw-bolder text-white"
+                        style="
+                        width:64px;height:64px;font-size:1.6rem;
+                        background:{% if forloop.counter == 1 %}linear-gradient(135deg,#f59e0b,#d97706){% elif forloop.counter == 2 %}linear-gradient(135deg,#94a3b8,#64748b){% else %}linear-gradient(135deg,#b45309,#92400e){% endif %};
+                        box-shadow:0 4px 15px rgba(0,0,0,0.15);">
+                        {{ forloop.counter }}
+                    </div>
+                </div>
+                <h5 class="fw-bold mb-1 fs-5">{{ member.full_name }}</h5>
+                <p class="text-muted small mb-3">{{ member.ieee_number }}</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <span class="pill-badge pill-badge-gold">{{ member.total_points }} pts</span>
+                    <span class="pill-badge">{{ member.referral_count }} referrals</span>
+                </div>
+            </div>
+    </div>
+    {% endif %}
+    {% endfor %}
 </div>
+{% endif %}
+
+<!-- Full Leaderboard Table -->
+<div class="card glass-panel border-0">
+    <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0">
+        <h5 class="fw-bold mb-0"><i class="bi bi-list-ol me-2 text-primary"></i>Full Rankings</h5>
+    </div>
+    <div class="card-body p-0 mt-3">
+        <table class="table leaderboard-table mb-0">
+            <thead>
+                <tr>
+                    <th class="text-uppercase text-muted ps-4"
+                        style="font-size:0.78rem;letter-spacing:1.5px;font-weight:700;">Rank</th>
+                    <th class="text-uppercase text-muted"
+                        style="font-size:0.78rem;letter-spacing:1.5px;font-weight:700;">Member Name</th>
+                    <th class="text-uppercase text-muted"
+                        style="font-size:0.78rem;letter-spacing:1.5px;font-weight:700;">IEEE Number</th>
+                    <th class="text-uppercase text-muted"
+                        style="font-size:0.78rem;letter-spacing:1.5px;font-weight:700;">Points</th>
+                    <th class="text-uppercase text-muted"
+                        style="font-size:0.78rem;letter-spacing:1.5px;font-weight:700;">Referrals</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in leaderboard %}
+                <tr
+                    class="{% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">
+                    <td class="rank-cell ps-4">
+                        {% if forloop.counter == 1 %}<span class="rank-gold">#1</span>
+                        {% elif forloop.counter == 2 %}<span class="rank-silver">#2</span>
+                        {% elif forloop.counter == 3 %}<span class="rank-bronze">#3</span>
+                        {% else %}#{{ forloop.counter }}{% endif %}
+                    </td>
+                    <td class="fw-semibold" style="font-size:1.05rem;">{{ member.full_name }}</td>
+                    <td class="text-muted" style="font-size:0.95rem;">{{ member.ieee_number }}</td>
+                    <td><span class="pill-badge pill-badge-gold">{{ member.total_points }} pts</span></td>
+                    <td><span class="pill-badge">{{ member.referral_count }}</span></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary"></i>
+                        <h6 class="fw-semibold">No members on the leaderboard yet</h6>
+                        <p class="small">Upload attendance to assign points and populate rankings.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+<style>
+    .podium-gold {
+        border-top: 4px solid var(--gold) !important;
+    }
+
+    .podium-silver {
+        border-top: 4px solid var(--silver) !important;
+    }
+
+    .podium-bronze {
+        border-top: 4px solid var(--bronze) !important;
+    }
+
+    .podium-rank-badge {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        font-size: 1.5rem;
+    }
+
+    [data-theme="dark"] h2,
+    [data-theme="dark"] h5,
+    [data-theme="dark"] .fw-bold {
+        color: #f1f5f9 !important;
+    }
+
+    [data-theme="dark"] .leaderboard-table tbody tr {
+        background-color: #1e293b !important;
+    }
+</style>
 {% endblock %}
