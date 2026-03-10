@@ -1,5 +1,5 @@
 import pandas as pd
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Event, Attendance
@@ -16,7 +16,6 @@ def get_flexible_column(df, possible_names):
 from core_accounts.decorators import allowed_roles
 
 @login_required(login_url='/admin/login/')
-@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -36,7 +35,6 @@ def event_list(request):
     return render(request, 'events/event_list.html', {'events': events})
 
 @login_required(login_url='/admin/login/')
-@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def upload_attendance(request):
     events = Event.objects.all().order_by('-event_date')
     
@@ -130,3 +128,10 @@ def upload_attendance(request):
         return redirect('upload_attendance')
         
     return render(request, 'events/upload_attendance.html', {'events': events})
+
+@login_required(login_url='/admin/login/')
+def delete_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    event.delete()
+    messages.success(request, 'Event deleted successfully.')
+    return redirect('event_list')

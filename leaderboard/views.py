@@ -165,7 +165,8 @@ def assign_badges(request):
 import csv
 from django.http import HttpResponse
 
-@co_admin_or_higher_required
+@login_required(login_url='/admin/login/')
+@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def export_badges_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="nisbadges_winners.csv"'
