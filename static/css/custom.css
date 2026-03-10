@@ -5,6 +5,12 @@
    v3 — Bigger fonts, white text in dark mode, premium look
    ============================================================ */
 
+* {
+    transition: background-color 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
+}
+
 :root {
     --font-primary: 'Outfit', sans-serif;
     --bg-light: #f1f5f9;
@@ -13,8 +19,8 @@
     --gold: #f59e0b;
     --silver: #94a3b8;
     --bronze: #b45309;
-    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
-    --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.06);
+    --card-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    --card-shadow-hover: 0 12px 32px rgba(0,0,0,0.12);
 }
 
 /* ============================================================
@@ -27,7 +33,7 @@
 }
 
 html {
-    font-size: 16px;
+    font-size: 17px;
 }
 
 body {
@@ -51,7 +57,7 @@ h6 {
 }
 
 p {
-    font-size: 1rem;
+    font-size: 1.08rem;
     color: #475569;
 }
 
@@ -104,30 +110,30 @@ strong {
 }
 
 /* Body copy → near-white */
-[data-theme="dark"] p {
-    color: #cbd5e1 !important;
+[data-theme="dark"] body p {
+    color: #ffffff !important;
 }
 
 [data-theme="dark"] strong {
-    color: #f1f5f9 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="dark"] small,
 [data-theme="dark"] .small {
-    color: #94a3b8 !important;
+    color: #ffffff !important;
 }
 
 /* Muted text → softer white */
 [data-theme="dark"] .text-muted {
-    color: #94a3b8 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="dark"] .text-dark {
-    color: #f1f5f9 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="dark"] .lead {
-    color: #cbd5e1 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="dark"] .fw-semibold,
@@ -138,7 +144,7 @@ strong {
 
 /* Links */
 [data-theme="dark"] a:not(.btn):not(.sidebar a) {
-    color: #93c5fd;
+    color: #ffffff;
 }
 
 /* Form labels, help text */
@@ -225,6 +231,7 @@ strong {
    ============================================================ */
 .sidebar {
     background: #ffffff !important;
+    backdrop-filter: blur(8px);
     border-right: 1px solid rgba(0, 0, 0, 0.06);
     transition: background-color 0.3s ease;
     min-width: 240px;
@@ -234,13 +241,14 @@ strong {
 [data-theme="dark"] .sidebar {
     background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
     border-right: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 }
 
 /* Sidebar brand heading */
 .sidebar h4 {
     font-size: 1.3rem !important;
     font-weight: 800 !important;
-    color: #0f172a !important;
+    color: #0f172a  !important;
     padding: 0 20px;
 }
 
@@ -257,7 +265,7 @@ strong {
 }
 
 [data-theme="dark"] .sidebar .text-muted {
-    color: #475569 !important;
+    color: #ffffff !important;
 }
 
 /* Nav links — BIGGER */
@@ -266,7 +274,7 @@ strong {
     align-items: center;
     font-size: 1rem !important;
     font-weight: 500 !important;
-    color: #334155 !important;
+    color: #334155  !important;
     padding: 10px 16px !important;
     border-radius: 10px !important;
     margin: 2px 10px !important;
@@ -305,13 +313,13 @@ strong {
 
 /* Submenu links slightly smaller */
 .sidebar .submenu a {
-    font-size: 0.95rem !important;
+    font-size: 1rem !important;
     padding-left: 36px !important;
     color: #475569 !important;
 }
 
 [data-theme="dark"] .sidebar .submenu a {
-    color: #94a3b8 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="dark"] .sidebar .submenu a:hover {
@@ -589,7 +597,7 @@ strong {
 }
 
 .table td {
-    font-size: 1rem;
+    font-size: 1.05rem;
     vertical-align: middle;
     padding: 14px 16px !important;
 }
@@ -629,6 +637,8 @@ strong {
    ============================================================ */
 .content-area {
     font-size: 1rem;
+    /* max-width: 1400px; */
+    margin: 0 auto;
 }
 
 [data-theme="dark"] #live-clock {

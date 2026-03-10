@@ -69,10 +69,8 @@
                             <td class="py-3">
                                 <span class="pill-badge pill-badge-gold">{{ event.final_points }} pts</span>
                             </td>
-                            <td class="py-3 text-muted">{{
-                                event.created_by.full_name|default:event.created_by.email|default:"-" }}</td>
-                            <td class="pe-4 py-3 text-muted" style="font-size:0.9rem;">{{ event.created_at|date:"M d, Y"
-                                }}</td>
+                            <td class="py-3 text-muted">{{event.created_by.full_name|default:event.created_by.email|default:"-" }}</td>
+                            <td class="pe-4 py-3 text-muted" style="font-size:0.9rem;">{{ event.created_at|date:"M d, Y"}}</td>
                         </tr>
                         {% empty %}
                         <tr>
