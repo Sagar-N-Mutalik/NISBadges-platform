@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 from core_accounts.models import CoreUser
 from members.models import IEEEMember
 
@@ -26,7 +27,11 @@ class Event(models.Model):
     event_date = models.DateField()
     
     # Optional override points
-    override_points = models.IntegerField(blank=True, null=True, help_text="Leave blank to use default points") 
+    override_points = models.IntegerField(
+        blank=True, null=True,
+        validators=[MinValueValidator(0)],
+        help_text="Leave blank to use the default points for this event type. Must be 0 or greater."
+    )
     
     # Linked to the core member who created it
     created_by = models.ForeignKey(CoreUser, on_delete=models.SET_NULL, null=True, related_name='created_events')

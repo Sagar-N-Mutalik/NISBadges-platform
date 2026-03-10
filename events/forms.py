@@ -9,5 +9,5 @@ class EventForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Event Name'}),
             'event_type': forms.Select(attrs={'class': 'form-select'}),
             'event_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'override_points': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Optional Override Points'}),
+            'override_points': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Optional Override Points', 'min': '0'}),
         }
