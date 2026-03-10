@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from members.models import IEEEMember
+from events.models import Event
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -22,3 +25,13 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@login_required(login_url='login')
+def dashboard_home(request):
+    total_members = IEEEMember.objects.count()
+    total_events = Event.objects.count()
+    context = {
+        'total_members': total_members,
+        'total_events': total_events,
+    }
+    return render(request, 'core_accounts/dashboard.html', context)

@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Global Foundation */
+    --font-primary: 'Outfit', sans-serif;
+
+    /* Modern Color Palette */
+    --bg-light: #f8fafc;
+    --sidebar-bg: #0f172a;
+    --primary-accent: #3b82f6;
+    /* Deep logic blue */
+    --secondary-accent: #8b5cf6;
+    /* Electric purple */
+    --gold: #f59e0b;
+    --silver: #94a3b8;
+    --bronze: #b45309;
+
+    --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --hover-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+}
+
+body {
+    font-family: var(--font-primary) !important;
+    background-color: var(--bg-light) !important;
+    color: #334155;
+}
+
+[data-theme="dark"] body {
+    background-color: #020617 !important;
+    color: #f1f5f9;
+}
+
+/* 1. Global Cards Override */
+.card,
+.glass-panel {
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: var(--card-shadow) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover:not(.no-hover) {
+    box-shadow: var(--hover-shadow) !important;
+}
+
+[data-theme="dark"] .card {
+    background-color: #0f172a !important;
+}
+
+/* 2. Sidebar Navigation */
+.sidebar {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+    color: #e2e8f0;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar a {
+    color: #94a3b8 !important;
+    transition: all 0.3s ease !important;
+    border-radius: 12px !important;
+    margin: 4px 12px;
+}
+
+.sidebar a:hover {
+    color: #ffffff !important;
+    transform: translateX(4px);
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.sidebar a.active {
+    background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent)) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    font-weight: 600;
+}
+
+.sidebar .submenu a {
+    padding-left: 20px;
+    font-size: 0.9em;
+}
+
+/* 3. Leaderboard Styles */
+.leaderboard-table {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    /* Space between rows */
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    border: none !important;
+    padding: 16px 20px;
+    vertical-align: middle;
+}
+
+.leaderboard-table tbody tr {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.leaderboard-table tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .leaderboard-table tbody tr {
+    background-color: #1e293b;
+}
+
+/* Base styling for rank cells */
+.rank-cell {
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+/* Ranks colors and glowing effects */
+.rank-1 .rank-cell {
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+.rank-2 .rank-cell {
+    color: var(--silver);
+    text-shadow: 0 0 10px rgba(148, 163, 184, 0.4);
+}
+
+.rank-3 .rank-cell {
+    color: var(--bronze);
+    text-shadow: 0 0 10px rgba(180, 83, 9, 0.4);
+}
+
+.rank-1 {
+    border-left: 4px solid var(--gold) !important;
+}
+
+.rank-2 {
+    border-left: 4px solid var(--silver) !important;
+}
+
+.rank-3 {
+    border-left: 4px solid var(--bronze) !important;
+}
+
+/* Modern Badges (Pills) */
+.pill-badge {
+    padding: 6px 12px;
+    border-radius: 50rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-accent);
+}
+
+.pill-badge-gold {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--gold);
+}
+
+/* 4. Data Entry & Form Styles */
+.form-control,
+.form-select {
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] .form-select::placeholder {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    border-color: var(--primary-accent) !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25) !important;
+    color: #f8fafc !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* Drag and Drop Zone */
+.file-upload-zone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .file-upload-zone {
+    background-color: rgba(15, 23, 42, 0.5);
+    border-color: #334155;
+}
+
+.file-upload-zone:hover {
+    border-color: var(--primary-accent);
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.file-upload-zone input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-upload-icon {
+    font-size: 3rem;
+    color: #94a3b8;
+    margin-bottom: 15px;
+}
+
+.file-upload-text {
+    font-size: 1.1rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+/* Gradient Buttons */
+.btn-gradient {
+    background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+    color: white;
+}
+
+/* 5. Login Spectacular Styles */
+.login-body {
+    background: radial-gradient(circle at top right, #3b82f640, transparent 40%),
+        radial-gradient(circle at bottom left, #8b5cf640, transparent 40%),
+        #0f172a !important;
+    /* Mesh dark background */
+}
+
+.login-glass-card {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    color: white;
+}
+
+.login-glass-card .form-control {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-radius: 12px;
+}
+
+.login-glass-card .form-control:focus {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-color: var(--secondary-accent) !important;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2) !important;
+}
+
+.login-glass-card .input-group-text {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #94a3b8 !important;
+    border-right: none !important;
+}
+
+.login-glass-card .form-control {
+    border-left: none !important;
+}

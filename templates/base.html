@@ -7,54 +7,34 @@
     <title>{% block title %}NISBadges Platform{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: #f8f9fa;
-        }
 
-        .sidebar {
-            width: 250px;
-            background-color: #212529;
-            min-height: 100vh;
-            padding-top: 20px;
-            color: white;
-        }
+    <!-- Google Fonts for Premium Theme -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
-        .sidebar a {
-            color: #adb5bd;
-            text-decoration: none;
-            padding: 10px 20px;
-            display: block;
-            font-weight: 500;
-        }
+    <!-- Custom Themes -->
+    {% load static %}
+    <link href="{% static 'css/glass.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
 
-        .sidebar a:hover,
-        .sidebar a.active {
-            color: #fff;
-            background-color: #343a40;
+    <script>
+        // Check local storage or system preference for theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
         }
-
-        .sidebar .submenu a {
-            padding-left: 40px;
-            font-size: 0.9em;
-        }
-
-        .content-area {
-            flex-grow: 1;
-            padding: 30px;
-        }
-    </style>
+    </script>
 </head>
 
 <body class="d-flex flex-row">
 
-    <div class="sidebar shadow-sm">
-        <h4 class="text-center text-white fw-bold mb-4">NISBadges</h4>
+    <div class="sidebar glass-panel shadow-sm">
+        <h4 class="text-center fw-bold mb-4">NISBadges</h4>
 
-        <a href="#" class="{% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">
+        <a href="{% url 'dashboard_home' %}"
+            class="{% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">
             <i class="bi bi-house-door me-2"></i> Dashboard
         </a>
 
@@ -111,11 +91,53 @@
     </div>
 
     <div class="content-area">
+        <!-- Top Navigation / Header Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-light"
+            style="border-color: rgba(255,255,255,0.1) !important;">
+            <h5 class="mb-0 fw-bold text-dark d-none d-md-block pe-3" id="page-title">
+                <!-- Can be populated dynamically if needed -->
+            </h5>
+            <div class="d-flex justify-content-end align-items-center gap-3 w-100">
+                <div class="glass-panel px-4 py-2 rounded-pill d-flex align-items-center fw-medium shadow-sm"
+                    style="font-size: 0.95rem;">
+                    <i class="bi bi-clock me-2 text-primary"></i>
+                    <span id="live-clock">Loading time...</span>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm glass-panel rounded-circle shadow-sm" id="theme-toggle"
+                    style="width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.1);">
+                    <i class="bi bi-moon-stars fs-5"></i>
+                </button>
+            </div>
+        </div>
+
         {% block content %}
         {% endblock %}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            localStorage.setItem('theme', targetTheme);
+        });
+
+        // Live Clock JavaScript
+        function updateClock() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+            const timeString = now.toLocaleTimeString('en-US', timeOptions);
+            const dateString = now.toLocaleDateString('en-US', dateOptions);
+            document.getElementById('live-clock').textContent = `${timeString} | ${dateString}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+    <script src="{% static 'js/form-persistence.js' %}"></script>
 </body>
 
 </html>

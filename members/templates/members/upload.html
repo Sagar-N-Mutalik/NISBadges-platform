@@ -4,28 +4,31 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Upload Verified IEEE Members</h4>
+    <div class="card glass-panel shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-header border-bottom-0 pt-4 pb-0">
+            <h4 class="mb-0 text-center fw-bold">Upload Verified IEEE Members</h4>
         </div>
         <div class="card-body">
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
             {% endif %}
 
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="mb-3">
-                    <label for="file" class="form-label">Select Excel or CSV File</label>
-                    <input class="form-control" type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
-                    <div class="form-text">Ensure columns match: IEEE Number, Full Name, Gender, Email, Mobile, Branch, Year</div>
+                <div class="mb-4 position-relative file-upload-zone">
+                    <i class="bi bi-cloud-arrow-up file-upload-icon d-block"></i>
+                    <div class="file-upload-text mb-2">Drag and drop or click to upload CSV/Excel</div>
+                    <div class="text-muted small">Ensure columns match: IEEE Number, Full Name, Gender, Email, Mobile,
+                        Branch, Year</div>
+                    <input type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Process & Import</button>
+                <button type="submit" class="btn btn-gradient w-100 fs-5"><i
+                        class="bi bi-person-lines-fill me-2"></i>Process & Import Members</button>
             </form>
         </div>
     </div>

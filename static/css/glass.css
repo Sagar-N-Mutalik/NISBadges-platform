@@ -1,0 +1,97 @@
+:root {
+    --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --text-color: #212529;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --sidebar-link-color: #495057;
+    --sidebar-link-hover: #000;
+    --sidebar-link-bg-hover: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="dark"] {
+    --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    --glass-bg: rgba(15, 32, 39, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-color: #f8f9fa;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --sidebar-link-color: #adb5bd;
+    --sidebar-link-hover: #fff;
+    --sidebar-link-bg-hover: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    background-attachment: fixed;
+    background-size: cover;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.glass-panel {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 30px var(--shadow-color) !important;
+    color: var(--text-color) !important;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Utility to ensure text remains readable inside glass panels */
+.glass-panel h1, .glass-panel h2, .glass-panel h3, .glass-panel h4, .glass-panel h5, .glass-panel h6, .glass-panel p {
+    color: var(--text-color) !important;
+}
+
+/* Sidebar updates for Glassmorphism */
+.sidebar {
+    width: 250px;
+    padding-top: 20px;
+    margin: 15px; /* give it breathing room for the glass effect */
+    height: calc(100vh - 30px);
+}
+
+.sidebar a {
+    color: var(--sidebar-link-color) !important;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+    font-weight: 500;
+    border-radius: 8px;
+    margin: 0 10px 5px 10px;
+    transition: all 0.3s ease;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    color: var(--sidebar-link-hover) !important;
+    background-color: var(--sidebar-link-bg-hover) !important;
+}
+
+.sidebar .submenu a {
+    padding-left: 20px;
+    font-size: 0.9em;
+}
+
+.content-area {
+    flex-grow: 1;
+    padding: 30px 30px 30px 10px;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+/* Update tables to be readable in dark mode inside glass panels */
+.glass-panel .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--text-color);
+    color: var(--text-color);
+}
+
+.glass-panel .table thead th {
+    border-bottom-color: var(--glass-border);
+}
+
+.glass-panel .table td, .glass-panel .table th {
+    border-color: var(--glass-border);
+}

@@ -5,30 +5,37 @@
 {% block content %}
 <div class="container-fluid">
     <h2 class="mb-4 text-primary fw-bold">Official Leaderboard</h2>
-    <div class="card shadow-sm border-0">
+    <div class="card glass-panel shadow-sm border-0">
         <div class="card-body p-0">
-            <table class="table table-hover table-striped mb-0 text-center">
-                <thead class="table-dark">
+            <table class="table leaderboard-table mb-0 text-center">
+                <thead>
                     <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>IEEE Number</th>
-                        <th>Points</th>
-                        <th>Referrals</th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">Rank</th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">Name</th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">IEEE
+                            Number</th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">Points
+                        </th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.85rem; letter-spacing: 1px;">Referrals
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for member in leaderboard %}
-                    <tr>
-                        <td class="fw-bold text-primary">#{{ forloop.counter }}</td>
-                        <td>{{ member.full_name }}</td>
-                        <td>{{ member.ieee_number }}</td>
-                        <td class="fw-bold">{{ member.total_points }}</td>
-                        <td>{{ member.referral_count }}</td>
+                    <tr
+                        class="{% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">
+                        <td class="rank-cell">#{{ forloop.counter }}</td>
+                        <td class="fw-bold">{{ member.full_name }}</td>
+                        <td class="text-muted">{{ member.ieee_number }}</td>
+                        <td><span class="pill-badge pill-badge-gold">{{ member.total_points }} pts</span></td>
+                        <td><span class="pill-badge">{{ member.referral_count }}</span></td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-muted py-4">No members found on the leaderboard yet.</td>
+                        <td colspan="5" class="text-muted py-5 text-center">
+                            <i class="bi bi-inbox fs-2 d-block mb-3 text-secondary"></i>
+                            No members found on the leaderboard yet.
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

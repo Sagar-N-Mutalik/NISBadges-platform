@@ -4,40 +4,44 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
-        <div class="card-header bg-success text-white">
-            <h4 class="mb-0">Upload Event Attendance</h4>
+    <div class="card glass-panel shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-header border-bottom-0 pt-4 pb-0">
+            <h4 class="mb-0 text-center fw-bold">Upload Event Attendance</h4>
         </div>
         <div class="card-body">
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
             {% endif %}
 
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                
+
                 <div class="mb-3">
-                    <label for="event" class="form-label">Select Event</label>
+                    <label for="event" class="form-label fw-bold">Select Event</label>
                     <select class="form-select" id="event" name="event" required>
                         <option value="">-- Choose an Event --</option>
                         {% for event in events %}
-                            <option value="{{ event.id }}">{{ event.name }} ({{ event.event_date }}) - {{ event.final_points }} pts</option>
+                        <option value="{{ event.id }}">{{ event.name }} ({{ event.event_date }}) - {{ event.final_points
+                            }} pts</option>
                         {% endfor %}
                     </select>
                 </div>
 
-                <div class="mb-3">
-                    <label for="file" class="form-label">Google Forms Attendance Sheet (CSV/Excel)</label>
-                    <input class="form-control" type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
-                    <div class="form-text">The system will automatically detect variations of 'IEEE Number' and 'Are you IEEE member?' columns.</div>
+                <div class="mb-4 position-relative file-upload-zone mt-4">
+                    <i class="bi bi-file-earmark-spreadsheet file-upload-icon d-block"></i>
+                    <div class="file-upload-text mb-2">Drag and drop Google Forms Attendance Sheet (CSV/Excel)</div>
+                    <div class="text-muted small">The system will automatically detect variations of 'IEEE Number' and
+                        'Are you IEEE member?' columns.</div>
+                    <input type="file" id="file" name="file" accept=".csv, .xlsx, .xls" required>
                 </div>
-                
-                <button type="submit" class="btn btn-success w-100">Process Attendance</button>
+
+                <button type="submit" class="btn btn-gradient w-100 fs-5"><i class="bi bi-check-circle me-2"></i>Process
+                    Attendance</button>
             </form>
         </div>
     </div>

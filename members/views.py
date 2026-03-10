@@ -25,6 +25,11 @@ def clean_name(name):
     return name.strip()
 
 from core_accounts.decorators import main_admin_required
+from django.contrib.auth.decorators import login_required
+
+@login_required(login_url='login')
+def dashboard_home(request):
+    return render(request, 'members/dashboard_home.html')
 
 @main_admin_required
 def upload_members(request):

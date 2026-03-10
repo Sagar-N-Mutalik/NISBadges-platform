@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | NISBadges Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2">
+    <!-- Hero / Welcome Banner -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card glass-panel border-0 overflow-hidden position-relative p-5">
+                <!-- Abstract glowing orbs in background for effect -->
+                <div class="position-absolute rounded-circle"
+                    style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, rgba(0,0,0,0) 70%); top: -100px; right: -50px; filter: blur(40px); z-index: 0;">
+                </div>
+                <div class="position-absolute rounded-circle"
+                    style="width: 200px; height: 200px; background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(0,0,0,0) 70%); bottom: -50px; left: 10%; filter: blur(40px); z-index: 0;">
+                </div>
+
+                <div class="position-relative z-1">
+                    <h1 class="display-5 fw-bolder mb-3" style="letter-spacing: -1px;">
+                        Welcome back, <span
+                            style="background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{
+                            request.user.get_full_name|default:request.user.email }}</span>
+                    </h1>
+                    <p class="lead mb-4 fw-medium text-muted" style="max-width: 800px; line-height: 1.6;">
+                        The <strong class="text-dark">NISB (NIE IEEE Student Branch)</strong> is dedicated to technical
+                        excellence. The <strong style="color: var(--primary-accent);">NISBadges Initiative</strong> is
+                        our premier gamified system designed to relentlessly reward active volunteers, track engagement,
+                        and foster unparalleled community growth.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'view_leaderboard' %}"
+                            class="btn btn-gradient px-4 py-2 fs-6 rounded-pill shadow-sm">
+                            <i class="bi bi-trophy me-2"></i>View Leaderboard
+                        </a>
+                        <a href="{% url 'create_event' %}"
+                            class="btn btn-outline-secondary px-4 py-2 fs-6 rounded-pill glass-panel border-0 shadow-sm transition-all">
+                            <i class="bi bi-calendar-plus me-2"></i>Log New Event
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards Section -->
+    <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-activity me-2 text-primary"></i>Platform Telemetry</h4>
+    <div class="row g-4 mb-5">
+        <!-- Total Members Card -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="card glass-panel border-0 h-100 p-4 position-relative overflow-hidden group">
+                <div class="position-absolute top-0 end-0 p-4 opacity-25">
+                    <i class="bi bi-people d-block"
+                        style="font-size: 5rem; transform: rotate(15deg); margin-top: -20px; margin-right: -20px;"></i>
+                </div>
+                <div class="d-flex flex-column position-relative z-1 h-100">
+                    <div class="mb-3">
+                        <span
+                            class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 p-3 mb-2 shadow-sm">
+                            <i class="bi bi-person-lines-fill fs-4"></i>
+                        </span>
+                    </div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="letter-spacing: 1px; font-size: 0.8rem;">
+                        Total Active Members</h6>
+                    <h2 class="display-4 fw-bolder mb-0 mt-auto text-dark">{{ total_members }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Events Card -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="card glass-panel border-0 h-100 p-4 position-relative overflow-hidden">
+                <div class="position-absolute top-0 end-0 p-4 opacity-25">
+                    <i class="bi bi-calendar-event d-block"
+                        style="font-size: 5rem; transform: rotate(-10deg); margin-top: -20px; margin-right: -20px; color: var(--secondary-accent);"></i>
+                </div>
+                <div class="d-flex flex-column position-relative z-1 h-100">
+                    <div class="mb-3">
+                        <span
+                            class="d-inline-flex align-items-center justify-content-center rounded-3 p-3 mb-2 shadow-sm"
+                            style="background-color: rgba(139, 92, 246, 0.1); color: var(--secondary-accent);">
+                            <i class="bi bi-calendar-check fs-4"></i>
+                        </span>
+                    </div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="letter-spacing: 1px; font-size: 0.8rem;">
+                        Events Hosted</h6>
+                    <h2 class="display-4 fw-bolder mb-0 mt-auto text-dark">{{ total_events }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Health placeholder -->
+        <div class="col-xl-6 col-lg-12">
+            <div
+                class="card glass-panel border-0 h-100 p-4 d-flex justify-content-center align-items-center text-center">
+                <div class="py-4">
+                    <div class="spinner-grow text-success mb-3" role="status"
+                        style="width: 3rem; height: 3rem; opacity: 0.5;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">System Online</h5>
+                    <p class="text-muted mb-0 small">Gamification Engine & Authentication secured.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Dashboard Specific Local Overrides for Dark Mode Compatibility */
+    [data-theme="dark"] .text-dark {
+        color: #f1f5f9 !important;
+    }
+
+    [data-theme="dark"] .bg-primary.bg-opacity-10 {
+        background-color: rgba(59, 130, 246, 0.2) !important;
+    }
+</style>
+{% endblock %}

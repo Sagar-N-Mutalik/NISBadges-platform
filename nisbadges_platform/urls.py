@@ -16,6 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import RedirectView
+
+admin.site.site_header = "NISBadges Admin Portal"
+admin.site.site_title = "NISBadges System"
+admin.site.index_title = "Platform Management"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +28,5 @@ urlpatterns = [
     path('dashboard/', include('members.urls')), # Members database
     path('events/', include('events.urls')),     # Event management & attendance
     path('leaderboard/', include('leaderboard.urls')), # Rankings & badge eligibility
+    path('', RedirectView.as_view(pattern_name='dashboard_home', permanent=False), name='root_index'),
 ]
