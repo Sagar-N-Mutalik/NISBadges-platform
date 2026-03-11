@@ -1,0 +1,33 @@
+/*
+ * NISBadges — Custom Django Admin CSS
+ * Fixed floating "Save Changes" button for list_editable pages.
+ */
+
+#floating-save-bar {
+    position: fixed;
+    top: 16px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff !important;
+    padding: 10px 22px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+}
+
+#floating-save-bar:hover {
+    box-shadow: 0 6px 28px rgba(99, 102, 241, 0.7);
+    transform: translateY(-2px);
+    color: #fff !important;
+}

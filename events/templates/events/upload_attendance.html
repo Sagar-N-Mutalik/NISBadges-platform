@@ -38,8 +38,7 @@
                             <select class="form-select" id="event" name="event" required>
                                 <option value="">— Choose an event —</option>
                                 {% for event in events %}
-                                <option value="{{ event.id }}">{{ event.name }} ({{ event.event_date }}) — {{
-                                    event.final_points }} pts</option>
+                                <option value="{{ event.id }}">{{ event.name }} ({{ event.event_date }}) — {{event.final_points }} pts</option>
                                 {% endfor %}
                             </select>
                         </div>

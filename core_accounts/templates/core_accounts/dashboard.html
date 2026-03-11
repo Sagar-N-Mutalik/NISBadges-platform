@@ -19,7 +19,7 @@
                     <p class="text-muted small text-uppercase fw-semibold mb-1" style="letter-spacing:2px;">NISBadges
                         Internal Platform</p>
                     <h1 class="display-5 fw-bolder mb-3" style="letter-spacing:-1px;">Welcome back, <span
-                            class="gradient-text">{% autoescape off %}{{request.user.full_name|default:request.user.email }}{% endautoescape %}</span></h1>
+                            class="gradient-text">{{ request.user.full_name|default:request.user.email }}</span></h1>
                     <p class="lead mb-4 fw-medium text-muted" style="max-width:700px;line-height:1.7;">
                         The <strong>NISB (NIE IEEE Student Branch)</strong> gamification engine — rewarding active
                         volunteers, tracking engagement, and driving community growth.

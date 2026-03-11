@@ -6,7 +6,7 @@
 <div class="container-fluid py-2">
 
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <p class="text-muted small text-uppercase fw-semibold mb-1" style="letter-spacing:2px;">NISBadges</p>
             <h2 class="fw-bolder mb-0" style="letter-spacing:-0.5px;font-size:2rem;">
@@ -15,24 +15,51 @@
         </div>
     </div>
 
-    <!-- Top 3 Podium Cards -->
+    <!-- Search Bar -->
+    <div class="mb-5">
+        <form method="GET" action="{% url 'view_leaderboard' %}">
+            <div class="input-group" style="max-width:600px;">
+                <span class="input-group-text border-0 glass-panel rounded-start-pill ps-4"
+                    style="background:var(--glass-bg,#fff);">
+                    <i class="bi bi-search text-muted fs-5"></i>
+                </span>
+                <input type="text" name="q" class="form-control border-0" placeholder="Search by name or IEEE number…"
+                    value="{{ search_query }}" autocomplete="off"
+                    style="padding:14px 20px;font-size:1rem;background:var(--glass-bg,#fff);">
+                <button class="btn btn-gradient rounded-end-pill px-4" type="submit">Search</button>
+                {% if search_query %}
+                <a href="{% url 'view_leaderboard' %}" class="btn btn-outline-secondary rounded-pill ms-2 px-3"
+                    title="Clear search">
+                    <i class="bi bi-x-lg"></i> Clear
+                </a>
+                {% endif %}
+            </div>
+        </form>
+        {% if search_query %}
+        <p class="text-muted small mt-2 ms-1">
+            Showing results for <strong>"{{ search_query }}"</strong> — ranks reflect global positions.
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- Top 3 Podium Cards — only when not searching -->
+    {% if not search_query %}
     {% if leaderboard %}
     <div class="row g-4 mb-5 justify-content-center">
         {% for member in leaderboard %}
-        {% if forloop.counter <= 3 %} <div class="col-md-4">
+        {% if member.absolute_rank <= 3 %} <div class="col-md-4">
             <div
                 class="card glass-panel border-0 p-4 text-center position-relative overflow-hidden
-                {% if forloop.counter == 1 %}podium-gold{% elif forloop.counter == 2 %}podium-silver{% else %}podium-bronze{% endif %}">
+                {% if member.absolute_rank == 1 %}podium-gold{% elif member.absolute_rank == 2 %}podium-silver{% else %}podium-bronze{% endif %}">
                 <div class="podium-rank-badge">
-                    {% if forloop.counter == 1 %}🏆{% elif forloop.counter == 2 %}🥈{% else %}🥉{% endif %}
+                    {% if member.absolute_rank == 1 %}🏆{% elif member.absolute_rank == 2 %}🥈{% else %}🥉{% endif %}
                 </div>
                 <div class="mb-3 mt-2">
                     <div class="d-inline-flex align-items-center justify-content-center rounded-circle fw-bolder text-white"
-                        style="
-                        width:64px;height:64px;font-size:1.6rem;
-                        background:{% if forloop.counter == 1 %}linear-gradient(135deg,#f59e0b,#d97706){% elif forloop.counter == 2 %}linear-gradient(135deg,#94a3b8,#64748b){% else %}linear-gradient(135deg,#b45309,#92400e){% endif %};
+                        style="width:64px;height:64px;font-size:1.6rem;
+                        background:{% if member.absolute_rank == 1 %}linear-gradient(135deg,#f59e0b,#d97706){% elif member.absolute_rank == 2 %}linear-gradient(135deg,#94a3b8,#64748b){% else %}linear-gradient(135deg,#b45309,#92400e){% endif %};
                         box-shadow:0 4px 15px rgba(0,0,0,0.15);">
-                        {{ forloop.counter }}
+                        {{ member.absolute_rank }}
                     </div>
                 </div>
                 <h5 class="fw-bold mb-1 fs-5">{{ member.full_name }}</h5>
@@ -47,11 +74,19 @@
     {% endfor %}
 </div>
 {% endif %}
+{% endif %}
 
 <!-- Full Leaderboard Table -->
 <div class="card glass-panel border-0">
-    <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0">
-        <h5 class="fw-bold mb-0"><i class="bi bi-list-ol me-2 text-primary"></i>Full Rankings</h5>
+    <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0 d-flex align-items-center justify-content-between">
+        <h5 class="fw-bold mb-0">
+            <i class="bi bi-list-ol me-2 text-primary"></i>
+            {% if search_query %}Search Results{% else %}Full Rankings{% endif %}
+        </h5>
+        {% if leaderboard %}
+        <span class="pill-badge" style="font-size:0.85rem;">{{ leaderboard|length }}
+            member{{leaderboard|length|pluralize }}</span>
+        {% endif %}
     </div>
     <div class="card-body p-0 mt-3">
         <table class="table leaderboard-table mb-0">
@@ -67,29 +102,59 @@
                         style="font-size:0.78rem;letter-spacing:1.5px;font-weight:700;">Points</th>
                     <th class="text-uppercase text-muted"
                         style="font-size:0.78rem;letter-spacing:1.5px;font-weight:700;">Referrals</th>
+                    <th class="text-uppercase text-muted"
+                        style="font-size:0.78rem;letter-spacing:1.5px;font-weight:700;"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for member in leaderboard %}
                 <tr
-                    class="{% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% endif %}">
+                    class="{% if member.absolute_rank == 1 %}rank-1{% elif member.absolute_rank == 2 %}rank-2{% elif member.absolute_rank == 3 %}rank-3{% endif %}">
                     <td class="rank-cell ps-4">
-                        {% if forloop.counter == 1 %}<span class="rank-gold">#1</span>
-                        {% elif forloop.counter == 2 %}<span class="rank-silver">#2</span>
-                        {% elif forloop.counter == 3 %}<span class="rank-bronze">#3</span>
-                        {% else %}#{{ forloop.counter }}{% endif %}
+                        {% if member.absolute_rank == 1 %}<span class="rank-gold">#1</span>
+                        {% elif member.absolute_rank == 2 %}<span class="rank-silver">#2</span>
+                        {% elif member.absolute_rank == 3 %}<span class="rank-bronze">#3</span>
+                        {% else %}#{{ member.absolute_rank }}{% endif %}
                     </td>
                     <td class="fw-semibold" style="font-size:1.05rem;">{{ member.full_name }}</td>
                     <td class="text-muted" style="font-size:0.95rem;">{{ member.ieee_number }}</td>
                     <td><span class="pill-badge pill-badge-gold">{{ member.total_points }} pts</span></td>
                     <td><span class="pill-badge">{{ member.referral_count }}</span></td>
+                    <!-- Actions column — admin only -->
+                    <td class="pe-3">
+                        {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-ghost rounded-circle p-1" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" title="Actions">
+                                <i class="bi bi-three-dots-vertical fs-5"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg"
+                                style="min-width:180px;border-radius:12px;">
+                                <li>
+                                    <a class="dropdown-item py-2" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#referralModal{{ forloop.counter }}">
+                                        <i class="bi bi-pencil-square me-2 text-primary"></i>Edit Referrals
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </td>
                 </tr>
+
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center py-5 text-muted">
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        {% if search_query %}
+                        <i class="bi bi-search fs-1 d-block mb-3 text-secondary"></i>
+                        <h6 class="fw-semibold">No members found for "{{ search_query }}"</h6>
+                        <p class="small"><a href="{% url 'view_leaderboard' %}">Clear search</a> to see the full
+                            leaderboard.</p>
+                        {% else %}
                         <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary"></i>
                         <h6 class="fw-semibold">No members on the leaderboard yet</h6>
                         <p class="small">Upload attendance to assign points and populate rankings.</p>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -99,34 +164,123 @@
 </div>
 </div>
 
-<style>
-    .podium-gold {
-        border-top: 4px solid var(--gold) !important;
-    }
+{# ============================================================ #}
+{# Referral Modals — rendered OUTSIDE the table at the top #}
+{# level of the DOM. Bootstrap modals must never live inside a #}
+{# <table> because browsers move or strip block-level elements #}
+    {# found within <tbody>/<tr>/<td>, breaking querySelector. #}
+                {# ============================================================ #}
+                {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
+                {% for member in leaderboard %}
+                <div class="modal fade" id="referralModal{{ forloop.counter }}" tabindex="-1"
+                    aria-labelledby="referralModalLabel{{ forloop.counter }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+                        <div class="modal-content glass-panel border-0" style="border-radius:20px;">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title fw-bold" id="referralModalLabel{{ forloop.counter }}">
+                                    <i class="bi bi-pencil-square me-2 text-primary"></i>Edit Referrals
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body pt-1">
+                                <p class="text-muted small mb-3">
+                                    Editing referral count for <strong>{{ member.full_name }}</strong>.<br>
+                                    Points are recalculated automatically — each referral = <strong>50 pts</strong>.
+                                </p>
+                                <form method="POST" action="{% url 'update_manual_referral' member.ieee_number %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Total Verified Referrals</label>
+                                        <input type="number" name="new_count" min="0"
+                                            value="{{ member.referral_count }}" class="form-control form-control-lg"
+                                            required style="border-radius:12px;">
+                                        <small class="text-muted d-block mt-1">
+                                            Current: <strong>{{ member.referral_count }}</strong> referral{{member.referral_count|pluralize }}.
+                                            Set a new total; points adjust up or down by the difference &times; 50.
+                                        </small>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary py-2 fw-semibold"
+                                            style="border-radius:12px;background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;">
+                                            <i class="bi bi-check-circle me-2"></i>Save Changes
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
 
-    .podium-silver {
-        border-top: 4px solid var(--silver) !important;
-    }
+                <style>
+                    .podium-gold {
+                        border-top: 4px solid var(--gold) !important;
+                    }
 
-    .podium-bronze {
-        border-top: 4px solid var(--bronze) !important;
-    }
+                    .podium-silver {
+                        border-top: 4px solid var(--silver) !important;
+                    }
 
-    .podium-rank-badge {
-        position: absolute;
-        top: 12px;
-        right: 16px;
-        font-size: 1.5rem;
-    }
+                    .podium-bronze {
+                        border-top: 4px solid var(--bronze) !important;
+                    }
 
-    [data-theme="dark"] h2,
-    [data-theme="dark"] h5,
-    [data-theme="dark"] .fw-bold {
-        color: #f1f5f9 !important;
-    }
+                    .podium-rank-badge {
+                        position: absolute;
+                        top: 12px;
+                        right: 16px;
+                        font-size: 1.5rem;
+                    }
 
-    [data-theme="dark"] .leaderboard-table tbody tr {
-        background-color: #1e293b !important;
-    }
-</style>
-{% endblock %}
+                    /* Ghost button for the 3-dots action */
+                    .btn-ghost {
+                        background: transparent;
+                        border: none;
+                        color: var(--text-secondary, #64748b);
+                    }
+
+                    .btn-ghost:hover {
+                        background: rgba(99, 102, 241, 0.1);
+                        color: var(--primary-accent, #6366f1);
+                    }
+
+                    /* Dropdown styling in dark mode */
+                    [data-theme="dark"] .dropdown-menu {
+                        background: #1e293b !important;
+                        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                    }
+
+                    [data-theme="dark"] .dropdown-item {
+                        color: #e2e8f0 !important;
+                    }
+
+                    [data-theme="dark"] .dropdown-item:hover {
+                        background: rgba(255, 255, 255, 0.06) !important;
+                    }
+
+                    /* Modal dark mode */
+                    [data-theme="dark"] .modal-content {
+                        background: #1e293b !important;
+                        color: #f1f5f9 !important;
+                    }
+
+                    /* Search input glass effect */
+                    [data-theme="dark"] .input-group .form-control,
+                    [data-theme="dark"] .input-group .input-group-text {
+                        background: #1e293b !important;
+                        color: #f1f5f9 !important;
+                        border-color: #334155 !important;
+                    }
+
+                    [data-theme="dark"] h2,
+                    [data-theme="dark"] h5,
+                    [data-theme="dark"] .fw-bold {
+                        color: #f1f5f9 !important;
+                    }
+
+                    [data-theme="dark"] .leaderboard-table tbody tr {
+                        background-color: #1e293b !important;
+                    }
+                </style>
+                {% endblock %}

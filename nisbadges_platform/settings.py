@@ -126,3 +126,44 @@ AUTH_USER_MODEL = 'core_accounts.CoreUser'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard_home'
+
+# ---------------------------------------------------------------------------
+# Jazzmin Admin UI Configuration
+# ---------------------------------------------------------------------------
+JAZZMIN_SETTINGS = {
+    "site_title": "NISBadges Admin",
+    "site_header": "NISBadges Platform",
+    "site_brand": "NISBadges",
+    "welcome_sign": "Welcome to NISBadges Admin",
+    "copyright": "NISBadges Platform",
+
+    # Show all registered apps in the sidebar
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+
+    # Sidebar order — all 4 apps explicitly listed
+    "order_with_respect_to": [
+        "core_accounts",
+        "members",
+        "events",
+        "leaderboard",
+        "auth",
+    ],
+
+    # Icons for each model
+    "icons": {
+        "core_accounts.CoreUser": "fas fa-users-cog",
+        "members.IEEEMember":     "fas fa-id-badge",
+        "events.Event":           "fas fa-calendar-alt",
+        "events.Attendance":      "fas fa-clipboard-check",
+        "leaderboard.BadgeAward": "fas fa-award",
+        "auth.Group":             "fas fa-layer-group",
+    },
+    "default_icon_parents": "fas fa-folder",
+    "default_icon_children": "fas fa-circle",
+
+    "show_ui_builder": False,
+    "changeform_format": "horizontal_tabs",
+}

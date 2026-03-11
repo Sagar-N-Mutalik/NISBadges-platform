@@ -66,3 +66,29 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.member.full_name} attended {self.event.name}"
+
+
+# ---------------------------------------------------------------------------
+# Signal: auto-deduct points when an Attendance record is deleted
+# Placed here so it is guaranteed to be imported when Django loads the app.
+# ---------------------------------------------------------------------------
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+
+@receiver(post_delete, sender=Attendance)
+def deduct_points_on_attendance_delete(sender, instance, **kwargs):
+    """
+    Fires after any Attendance row is deleted (single delete or cascade).
+    Subtracts instance.points_awarded from the linked member's total_points.
+    A zero-floor guard prevents total_points from going negative.
+    """
+    try:
+        member = instance.member
+        member.total_points -= instance.points_awarded
+        # Safety: never let points drop below zero
+        if member.total_points < 0:
+            member.total_points = 0
+        member.save()
+    except Exception:
+        # Failsafe: member may already be deleted (e.g. CASCADE from IEEEMember)
+        pass

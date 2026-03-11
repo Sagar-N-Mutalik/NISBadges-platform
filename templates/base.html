@@ -30,8 +30,13 @@
 
 <body class="d-flex flex-row">
 
-    <div class="sidebar d-flex flex-column" style="width:240px;min-height:100vh;">
-        <h4 class="fw-bolder mb-4 px-4 pt-4" style="font-size:1.4rem;letter-spacing:-0.5px;">NISBadges</h4>
+    <div class="sidebar d-flex flex-column">
+        <div class="d-flex align-items-center gap-2 px-4 pt-3 mb-3">
+            <img src="{% static 'images/logo.png' %}" alt="NISBadges logo"
+                style="width:32px;height:32px;object-fit:contain;border-radius:8px;flex-shrink:0;">
+            <h4 class="fw-bolder mb-0" style="font-size:1.1rem;letter-spacing:-0.5px;">NISBadges</h4>
+        </div>
+
 
         <a href="{% url 'dashboard_home' %}"
             class="{% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">
@@ -67,12 +72,7 @@
         <div class="pt-4 pb-1 px-4 text-uppercase text-muted"
             style="font-size:0.72rem;font-weight:800;letter-spacing:2px;">Processing &amp;
             Ranks</div>
-        {% if request.user.role == 'main_admin' or request.user.role == 'co_admin' %}
-        <a href="{% url 'process_referrals' %}"
-            class="{% if request.resolver_match.url_name == 'process_referrals' %}active{% endif %}">
-            <i class="bi bi-person-plus me-2"></i> Referral Processing
-        </a>
-        {% endif %}
+
         <a href="{% url 'view_leaderboard' %}"
             class="{% if request.resolver_match.url_name == 'view_leaderboard' %}active{% endif %}">
             <i class="bi bi-trophy me-2"></i> Leaderboard
@@ -95,9 +95,19 @@
             <i class="bi bi-gear me-2"></i> Admin Settings
         </a>
         {% endif %}
+
+        <!-- ── Logout ───────────────────────────────────────────── -->
+        <div class="mt-auto px-3 pb-4" style="margin-top:auto;">
+            <hr style="border-color:rgba(0,0,0,0.08);margin:16px 0;">
+            <a href="{% url 'logout' %}"
+                class="sidebar-logout d-flex align-items-center text-danger fw-semibold px-3 py-2 rounded"
+                style="text-decoration:none;transition:background-color 0.2s;">
+                <i class="bi bi-box-arrow-right me-2 fs-5"></i> Logout
+            </a>
+        </div>
     </div>
 
-    <div class="content-area">
+    <div class="content-area" style="margin-left:240px;min-height:100vh;width:calc(100% - 240px);">
         <!-- Top Navigation / Header Bar -->
         <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom shadow-sm"
             style="border-color: rgba(0,0,0,0.05) !important;">
@@ -145,6 +155,70 @@
         updateClock();
     </script>
     <script src="{% static 'js/form-persistence.js' %}"></script>
+    <!-- ── Desktop-only warning overlay ─────────────────────────── -->
+    <div id="desktop-only-warning">
+        <div class="glass-card-warning">
+            <i class="bi bi-display mb-4 d-block" style="font-size:4rem;color:#818cf8;"></i>
+            <h2 class="fw-bolder mb-3" style="font-size:1.8rem;color:#f1f5f9;">Desktop Required</h2>
+            <p style="color:#94a3b8;line-height:1.7;max-width:380px;margin:0 auto 1.5rem;">
+                <strong style="color:#c7d2fe;">NISBadges</strong> is an internal automation platform
+                designed exclusively for laptops and desktop computers.<br><br>
+                Please switch to a larger screen (1024px+) to continue.
+            </p>
+            <div
+                style="display:inline-flex;align-items:center;gap:8px;background:rgba(129,140,248,0.12);border:1px solid rgba(129,140,248,0.25);border-radius:50px;padding:10px 20px;">
+                <i class="bi bi-laptop" style="color:#818cf8;"></i>
+                <span style="color:#a5b4fc;font-size:0.88rem;font-weight:600;">Open on a desktop browser</span>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* ── Desktop-only blocker ────────────────────────────────── */
+        #desktop-only-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0c1220;
+            z-index: 9999999;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .glass-card-warning {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        @media screen and (max-width: 1023px) {
+            #desktop-only-warning {
+                display: flex !important;
+            }
+
+            .sidebar,
+            .content-area,
+            main {
+                display: none !important;
+            }
+
+            body {
+                overflow: hidden !important;
+            }
+        }
+    </style>
+
 </body>
 
 </html>

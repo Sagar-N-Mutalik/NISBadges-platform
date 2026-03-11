@@ -1,66 +1,650 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | NISBadges Platform</title>
+    <title>Login | NISBadges</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-    {% load static %}
-    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+
+    <style>
+        /* ─── Design tokens ───────────────────────────────────────────── */
+        :root {
+            --navy: #0c1220;
+            --primary-glow: #a5b4fc;
+            /* soft lavender */
+            --secondary-glow: #7dd3fc;
+            /* soft teal      */
+            --accent: #6366f1;
+            --accent-blue: #3b82f6;
+            --gold: #f59e0b;
+        }
+
+        /* ─── Reset ──────────────────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--navy);
+            overflow: hidden;
+            color: #f8fafc;
+        }
+
+        /* ─── Ambient orbs ───────────────────────────────────────────── */
+        .background-shapes {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(110px);
+            opacity: 0.45;
+            animation: float 12s ease-in-out infinite alternate;
+        }
+
+        /* Center-left — soft lavender */
+        .shape-1 {
+            width: 42vw;
+            height: 42vw;
+            background: var(--primary-glow);
+            top: 25%;
+            left: -10vw;
+        }
+
+        /* Center-right — soft teal */
+        .shape-2 {
+            width: 45vw;
+            height: 45vw;
+            background: var(--secondary-glow);
+            bottom: 20%;
+            right: -10vw;
+            animation-delay: -6s;
+        }
+
+        /* Subtle top-center accent orb */
+        .shape-3 {
+            width: 30vw;
+            height: 30vw;
+            background: #818cf8;
+            top: -8%;
+            left: 35%;
+            opacity: 0.22;
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) scale(1);
+            }
+
+            50% {
+                transform: translateY(32px) scale(1.04);
+            }
+
+            100% {
+                transform: translateY(0px) scale(1);
+            }
+        }
+
+        /* ─── Star field ─────────────────────────────────────────────── */
+        #star-field {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Static twinkling stars */
+        .static-star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0.1;
+                transform: scale(0.8);
+            }
+
+            100% {
+                opacity: 0.75;
+                transform: scale(1.3);
+            }
+        }
+
+        /* Drifting particles */
+        .live-star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+            animation: drift linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translateY(110vh) translateX(0) scale(0.5);
+                opacity: 0;
+            }
+
+            12% {
+                opacity: 0.85;
+            }
+
+            88% {
+                opacity: 0.85;
+            }
+
+            100% {
+                transform: translateY(-10vh) translateX(40px) scale(1.1);
+                opacity: 0;
+            }
+        }
+
+        /* ─── Login wrapper ──────────────────────────────────────────── */
+        .login-wrapper {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ─── Animated conic-gradient border ────────────────────────── */
+        @property --angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        .card-border-wrap {
+            position: relative;
+            border-radius: 30px;
+            padding: 2px;
+            background: conic-gradient(from var(--angle),
+                    #6366f1, #818cf8, #7dd3fc, #38bdf8, #a5b4fc, #6366f1);
+            animation: spin-border 6s linear infinite;
+            box-shadow:
+                0 0 40px rgba(99, 102, 241, 0.22),
+                0 0 90px rgba(125, 211, 252, 0.12);
+        }
+
+        @keyframes spin-border {
+            to {
+                --angle: 360deg;
+            }
+        }
+
+        .glass-card {
+            background: rgba(12, 20, 36, 0.78) !important;
+            backdrop-filter: blur(30px) !important;
+            -webkit-backdrop-filter: blur(30px) !important;
+            border-radius: 28px !important;
+            padding: 2.75rem 2.5rem !important;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Diagonal shine highlight */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            background: linear-gradient(130deg, rgba(255, 255, 255, 0.06) 0%, transparent 55%);
+            pointer-events: none;
+        }
+
+        /* ─── Gold badge ─────────────────────────────────────────────── */
+        .gold-badge-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.04));
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            box-shadow:
+                0 0 20px rgba(245, 158, 11, 0.15),
+                0 0 60px rgba(245, 158, 11, 0.07);
+            animation: badge-pulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes badge-pulse {
+            0% {
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.15), 0 0 60px rgba(245, 158, 11, 0.07);
+            }
+
+            100% {
+                box-shadow: 0 0 32px rgba(245, 158, 11, 0.28), 0 0 80px rgba(245, 158, 11, 0.14);
+            }
+        }
+
+        /* ─── Brand text ─────────────────────────────────────────────── */
+        .brand-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #e2e8f0 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-sub {
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+        /* ─── Input labels ───────────────────────────────────────────── */
+        .input-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #475569;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        /* ─── Input groups ───────────────────────────────────────────── */
+        .custom-input-group {
+            background: rgba(6, 12, 24, 0.65) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.07) !important;
+            border-radius: 14px !important;
+            transition: all 0.3s ease !important;
+            overflow: hidden;
+        }
+
+        .custom-input-group:focus-within {
+            background: rgba(6, 12, 24, 0.88) !important;
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18) !important;
+        }
+
+        .custom-input-group:focus-within .input-icon {
+            color: var(--primary-glow) !important;
+        }
+
+        .input-icon {
+            background: transparent !important;
+            border: none !important;
+            color: #334155 !important;
+            padding: 0 0.4rem 0 1.1rem !important;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-input-group .form-control {
+            background: transparent !important;
+            border: none !important;
+            color: #e2e8f0 !important;
+            padding: 0.95rem 1rem 0.95rem 0.35rem !important;
+            font-size: 0.97rem;
+            font-family: 'Outfit', sans-serif;
+            caret-color: var(--accent);
+        }
+
+        .custom-input-group .form-control:focus {
+            box-shadow: none !important;
+            outline: none;
+        }
+
+        .custom-input-group .form-control::placeholder {
+            color: #1e3a5f !important;
+        }
+
+        /* ─── Kill browser autofill white background ─────────────────── */
+        .custom-input-group .form-control:-webkit-autofill,
+        .custom-input-group .form-control:-webkit-autofill:hover,
+        .custom-input-group .form-control:-webkit-autofill:focus,
+        .custom-input-group .form-control:-webkit-autofill:active {
+            /* Paint over the browser's forced white with a large inset shadow */
+            -webkit-box-shadow: 0 0 0 1000px rgba(6, 12, 24, 0.92) inset !important;
+            box-shadow: 0 0 0 1000px rgba(6, 12, 24, 0.92) inset !important;
+            -webkit-text-fill-color: #e2e8f0 !important;
+            caret-color: var(--accent) !important;
+            transition: background-color 9999s ease-in-out 0s;
+            /* prevents flash */
+        }
+
+
+        /* ─── Login button (gradient + shimmer sweep) ────────────────── */
+        .btn-login {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-blue) 100%) !important;
+            border: none !important;
+            border-radius: 14px !important;
+            color: #fff !important;
+            font-weight: 700 !important;
+            font-size: 1rem !important;
+            padding: 0.95rem !important;
+            letter-spacing: 0.4px;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 8px 24px -8px rgba(99, 102, 241, 0.65) !important;
+        }
+
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.24), transparent);
+            transform: skewX(-20deg);
+            animation: shimmer 3.2s 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+
+            55% {
+                left: 160%;
+            }
+
+            100% {
+                left: 160%;
+            }
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 14px 32px -8px rgba(99, 102, 241, 0.82) !important;
+        }
+
+        .btn-login:active {
+            transform: translateY(0) !important;
+        }
+
+        /* ─── Alert ──────────────────────────────────────────────────── */
+        .login-alert {
+            background: rgba(239, 68, 68, 0.1) !important;
+            border: 1px solid rgba(239, 68, 68, 0.25) !important;
+            color: #fca5a5;
+            border-radius: 12px;
+            font-size: 0.87rem;
+        }
+
+        /* ─── Footer caption ─────────────────────────────────────────── */
+        .login-caption {
+            color: #64748b;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+    </style>
 </head>
 
-<body class="login-body">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5 col-lg-4">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold text-white">NISBadges</h2>
-                    <p class="text-white-50">Internal Automation Platform</p>
-                </div>
+<body>
 
-                <div class="card login-glass-card border-0">
-                    <div class="card-body p-5">
-                        <h5 class="card-title text-center mb-4 text-white">Sign In</h5>
+    <!-- Ambient orbs -->
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
 
+    <!-- Star field -->
+    <div id="star-field"></div>
+
+    <!-- Top-left brand strip -->
+    <div style="
+        position:fixed;top:18px;left:24px;z-index:20;
+        display:flex;align-items:center;gap:14px;
+        pointer-events:none;
+    ">
+        <div class="gold-badge-container" style="width:52px;height:52px;flex-shrink:0;">
+            <img src="{% static 'images/logo.png' %}" alt="NISBadges"
+                style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">
+        </div>
+        <p style="
+            margin:0;
+            font-family:'Outfit',sans-serif;
+            font-size:1.35rem;
+            font-weight:800;
+            color:#e2e8f0;
+            letter-spacing:1.5px;
+            text-transform:uppercase;
+            line-height:1.2;
+            text-shadow:0 2px 12px rgba(0,0,0,0.5);
+        ">NIE IEEE<br><span style="color:#a5b4fc;">Student Branch</span></p>
+    </div>
+
+    <!-- Live clock — top-right -->
+    <div id="login-clock" style="
+        position:fixed;top:18px;right:24px;z-index:20;
+        display:flex;align-items:center;gap:8px;
+        background:rgba(15,23,42,0.55);
+        backdrop-filter:blur(12px);
+        border:1px solid rgba(255,255,255,0.08);
+        border-radius:50px;
+        padding:8px 18px;
+        font-family:'Outfit',sans-serif;
+        font-size:0.88rem;
+        font-weight:600;
+        color:#94a3b8;
+        letter-spacing:0.3px;
+        pointer-events:none;
+    ">
+        <i class="bi bi-clock" style="color:#6366f1;font-size:0.9rem;"></i>
+        <span id="login-clock-text">Loading...</span>
+    </div>
+
+    <!-- Login card -->
+    <div class="login-wrapper container-fluid px-3">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-sm-9 col-md-7 col-lg-5 col-xl-4">
+
+
+
+                <!-- Animated gradient border + glass card -->
+                <div class="card-border-wrap">
+                    <div class="glass-card">
+
+                        <!-- Brand heading -->
+                        <div class="text-center mb-5">
+                            <p class="brand-title mb-1">NISBadges</p>
+                            <p class="brand-sub">NIE IEEE Student Branch</p>
+                        </div>
+
+                        <!-- Flash messages -->
                         {% if messages %}
                         {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <div class="alert login-alert alert-dismissible fade show text-center mb-4" role="alert">
+                            <i class="bi bi-exclamation-circle me-2"></i>{{ message }}
+                            <button type="button" class="btn-close btn-close-white" style="font-size:0.65rem;"
+                                data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         {% endfor %}
                         {% endif %}
 
+                        <!-- Sign-in form -->
                         <form method="post">
                             {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" class="form-control" id="email" name="email" required autofocus>
-                                </div>
-                            </div>
+
                             <div class="mb-4">
-                                <label for="password" class="form-label">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                <label class="input-label" for="email">Email address</label>
+                                <div class="custom-input-group d-flex align-items-center">
+                                    <span class="input-icon"><i class="bi bi-envelope-fill"></i></span>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="Enter your E-mail" required autocomplete="email">
                                 </div>
                             </div>
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-gradient py-2 fw-bold fs-5">Login</button>
+
+                            <div class="mb-5">
+                                <label class="input-label" for="password">Password</label>
+                                <div class="custom-input-group d-flex align-items-center">
+                                    <span class="input-icon"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="••••••••" required autocomplete="current-password">
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-login">
+                                    Sign In &nbsp;<i class="bi bi-arrow-right-short fs-5 align-middle"></i>
+                                </button>
                             </div>
                         </form>
-                    </div>
+
+                    </div><!-- /.glass-card -->
+                </div><!-- /.card-border-wrap -->
+
+                <div class="text-center mt-4">
+                    <p class="login-caption">Core team access only &nbsp;·&nbsp; NIE IEEE Student Branch</p>
                 </div>
+
+            </div>
+        </div>
+    </div><!-- /.login-wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const starField = document.getElementById('star-field');
+            if (!starField) return;
+
+            /* ── 120 static twinkling stars ── */
+            for (let i = 0; i < 120; i++) {
+                const s = document.createElement('div');
+                s.className = 'static-star';
+                const sz = (Math.random() * 1.6 + 0.4).toFixed(1);
+                s.style.cssText = [
+                    `width:${sz}px`,
+                    `height:${sz}px`,
+                    `top:${(Math.random() * 100).toFixed(1)}vh`,
+                    `left:${(Math.random() * 100).toFixed(1)}vw`,
+                    `animation-duration:${(Math.random() * 3 + 2).toFixed(1)}s`,
+                    `animation-delay:${(Math.random() * 5).toFixed(1)}s`,
+                    `opacity:${(Math.random() * 0.35 + 0.08).toFixed(2)}`
+                ].join(';');
+                starField.appendChild(s);
+            }
+
+            /* ── 55 drifting particles ── */
+            for (let i = 0; i < 55; i++) {
+                const p = document.createElement('div');
+                p.className = 'live-star';
+                const sz = (Math.random() * 1.8 + 0.7).toFixed(1);
+                p.style.cssText = [
+                    `width:${sz}px`,
+                    `height:${sz}px`,
+                    `left:${(Math.random() * 100).toFixed(1)}vw`,
+                    `animation-duration:${(Math.random() * 14 + 10).toFixed(1)}s`,
+                    `animation-delay:${(Math.random() * 12).toFixed(1)}s`
+                ].join(';');
+                starField.appendChild(p);
+            }
+
+            /* ── Live clock ── */
+            function tickClock() {
+                const now = new Date();
+                const t = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+                const d = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                const el = document.getElementById('login-clock-text');
+                if (el) el.textContent = `${t}  |  ${d}`;
+            }
+            tickClock();
+            setInterval(tickClock, 1000);
+        });
+    </script>
+    <!-- ── Desktop-only warning overlay ─────────────────────────── -->
+    <div id="desktop-only-warning">
+        <div class="glass-card-warning">
+            <i class="bi bi-display mb-4 d-block" style="font-size:4rem;color:#818cf8;"></i>
+            <h2 class="fw-bolder mb-3" style="font-size:1.8rem;color:#f1f5f9;">Desktop Required</h2>
+            <p style="color:#94a3b8;line-height:1.7;max-width:380px;margin:0 auto 1.5rem;">
+                <strong style="color:#c7d2fe;">NISBadges</strong> is an internal automation platform
+                designed exclusively for laptops and desktop computers.<br><br>
+                Please switch to a larger screen (1024px+) to continue.
+            </p>
+            <div
+                style="display:inline-flex;align-items:center;gap:8px;background:rgba(129,140,248,0.12);border:1px solid rgba(129,140,248,0.25);border-radius:50px;padding:10px 20px;">
+                <i class="bi bi-laptop" style="color:#818cf8;"></i>
+                <span style="color:#a5b4fc;font-size:0.88rem;font-weight:600;">Open on a desktop browser</span>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        /* ── Desktop-only blocker ─────────────────────────────────── */
+        #desktop-only-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0c1220;
+            z-index: 9999999;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .glass-card-warning {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        @media screen and (max-width: 1023px) {
+            #desktop-only-warning {
+                display: flex !important;
+            }
+
+            .login-wrapper,
+            .background-shapes,
+            #star-field,
+            #login-clock,
+            [id^="login"] {
+                display: none !important;
+            }
+
+            body {
+                overflow: hidden !important;
+            }
+        }
+    </style>
+
 </body>
 
 </html>

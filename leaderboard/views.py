@@ -1,13 +1,29 @@
+import re
 import pandas as pd
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from members.models import IEEEMember
 
+
+
+
+
 def get_flexible_column(df, possible_names):
-    """Matches dataframe columns against a list of possible variations."""
+    """
+    Smart-matches DataFrame columns by normalizing spaces and punctuation.
+    Strips '?' and collapses whitespace before comparing. Accepts substring
+    matches and guards against cross-contamination between number/id columns.
+    """
     for col in df.columns:
-        if str(col).strip().lower() in possible_names:
-            return col
+        normalized_col = re.sub(r'\s+', ' ', str(col).lower().replace('?', '')).strip()
+        for name in possible_names:
+            normalized_name = re.sub(r'\s+', ' ', name.lower().replace('?', '')).strip()
+            if normalized_col == normalized_name or normalized_name in normalized_col:
+                if 'number' in normalized_col and 'number' not in normalized_name:
+                    continue
+                if 'id' in normalized_col and 'id' not in normalized_name:
+                    continue
+                return col
     return None
 
 from core_accounts.decorators import allowed_roles, co_admin_or_higher_required
@@ -15,87 +31,78 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/admin/login/')
 @allowed_roles(allowed_roles=['main_admin', 'co_admin'])
-def process_referrals(request):
+def update_manual_referral(request, ieee_number):
+    """
+    POST-only view. Sets a member's referral count to the submitted value and
+    adjusts total_points by the difference:
+      difference = new_count - old_count
+      points_adjustment = difference * 50   (positive = add, negative = subtract)
+    """
     if request.method == 'POST':
-        file = request.FILES.get('file')
-        
-        if not file:
-            messages.error(request, "Please upload a file.")
-            return redirect('process_referrals')
-            
+        member = get_object_or_404(IEEEMember, ieee_number=ieee_number)
         try:
-            if file.name.endswith('.csv'):
-                df = pd.read_csv(file)
-            elif file.name.endswith(('.xls', '.xlsx')):
-                df = pd.read_excel(file)
-            else:
-                messages.error(request, "Unsupported file format.")
-                return redirect('process_referrals')
+            new_count = int(request.POST.get('new_count', 0))
+            if new_count < 0:
+                new_count = 0
+        except (ValueError, TypeError):
+            new_count = 0
 
-            # Find the referral column flexibly
-            referral_col = get_flexible_column(df, [
-                "referral ieee", "referral ieee number", "referred by", "referred by (ieee number)"
-            ])
+        difference = new_count - member.referral_count
+        points_adjustment = difference * 50
 
-            if not referral_col:
-                messages.error(request, "Could not detect a 'Referral IEEE' column in the uploaded file.")
-                return redirect('process_referrals')
+        member.total_points += points_adjustment
+        member.referral_count = new_count
+        member.save()
 
-            stats = {
-                'total_rows': len(df),
-                'successful_referrals': 0,
-                'invalid_referrals': 0,
-            }
+        if points_adjustment > 0:
+            adj_str = f"+{points_adjustment}"
+        elif points_adjustment < 0:
+            adj_str = str(points_adjustment)
+        else:
+            adj_str = "0 (no change)"
 
-            for index, row in df.iterrows():
-                referrer_ieee = str(row.get(referral_col, '')).strip()
-                
-                # Skip empty referral cells
-                if not referrer_ieee or referrer_ieee.lower() == 'nan':
-                    continue
-                
-                try:
-                    # Look up the member who made the referral
-                    referrer = IEEEMember.objects.get(ieee_number=referrer_ieee)
-                    
-                    # Award 50 points and increment referral count
-                    referrer.total_points += 50
-                    referrer.referral_count += 1
-                    referrer.save()
-                    
-                    stats['successful_referrals'] += 1
-                    
-                except IEEEMember.DoesNotExist:
-                    # The referral number provided doesn't belong to a verified member
-                    stats['invalid_referrals'] += 1
+        messages.success(
+            request,
+            f"Updated referrals for {member.full_name} → {new_count} referral"
+            f"{'s' if new_count != 1 else ''}. Points adjusted by {adj_str}."
+        )
+    return redirect('view_leaderboard')
 
-            report = (f"Referral Processing Complete. Total Rows: {stats['total_rows']} | "
-                      f"Successful Referrals (+50 pts each): {stats['successful_referrals']} | "
-                      f"Invalid/Unverified Referrals Skipped: {stats['invalid_referrals']}")
-            
-            messages.success(request, report)
-            
-        except Exception as e:
-            messages.error(request, f"Error processing file: {str(e)}")
-            
-        return redirect('process_referrals')
-
-    return render(request, 'leaderboard/process_referrals.html')
-# ... (keep your existing process_referrals function at the top) ...
 
 def view_leaderboard(request):
     """
     Ranks members based on points.
     Tie-Breaker 1: Higher referral count wins.
     Tie-Breaker 2: Whoever reached the score first (last_score_update ASC) ranks higher.
+
+    Absolute ranks are assigned in Python before any search filter is applied,
+    so a searched subset always shows the correct global position.
     """
-    leaderboard_data = IEEEMember.objects.all().order_by(
-        '-total_points', 
-        '-referral_count', 
+    all_members = IEEEMember.objects.all().order_by(
+        '-total_points',
+        '-referral_count',
         'last_score_update'
     )
-    
-    return render(request, 'leaderboard/leaderboard.html', {'leaderboard': leaderboard_data})
+
+    # Assign absolute rank to each member object in memory
+    ranked_members = []
+    for index, member in enumerate(all_members, start=1):
+        member.absolute_rank = index
+        ranked_members.append(member)
+
+    # Search — filters the pre-ranked list so ranks are preserved
+    search_query = request.GET.get('q', '').strip().lower()
+    if search_query:
+        ranked_members = [
+            m for m in ranked_members
+            if search_query in m.full_name.lower()
+            or search_query in m.ieee_number.lower()
+        ]
+
+    return render(request, 'leaderboard/leaderboard.html', {
+        'leaderboard': ranked_members,
+        'search_query': search_query,
+    })
 
 
 from django.contrib.auth.decorators import login_required
