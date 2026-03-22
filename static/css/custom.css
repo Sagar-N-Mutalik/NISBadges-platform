@@ -230,20 +230,31 @@ strong {
    SIDEBAR — Bigger, bolder, white in dark
    ============================================================ */
 .sidebar {
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    height: 100vh !important;
-    overflow-y: auto;
-    overflow-x: hidden;
     background: #ffffff !important;
     backdrop-filter: blur(8px);
     border-right: 1px solid rgba(0, 0, 0, 0.06);
     transition: background-color 0.3s ease;
-    min-width: 240px;
-    width: 240px;
     padding: 20px 0;
-    z-index: 100;
+    z-index: 1045;
+}
+
+@media (min-width: 992px) {
+    .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        height: 100vh !important;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-width: 240px;
+        width: 240px;
+        z-index: 100;
+    }
+
+    .content-area {
+        margin-left: 240px;
+        width: calc(100% - 240px);
+    }
 }
 
 [data-theme="dark"] .sidebar {

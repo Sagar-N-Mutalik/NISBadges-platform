@@ -2,30 +2,9 @@ import re
 import pandas as pd
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db.models import F, Window, Q
+from django.db.models.functions import Rank
 from members.models import IEEEMember
-
-
-
-
-
-def get_flexible_column(df, possible_names):
-    """
-    Smart-matches DataFrame columns by normalizing spaces and punctuation.
-    Strips '?' and collapses whitespace before comparing. Accepts substring
-    matches and guards against cross-contamination between number/id columns.
-    """
-    for col in df.columns:
-        normalized_col = re.sub(r'\s+', ' ', str(col).lower().replace('?', '')).strip()
-        for name in possible_names:
-            normalized_name = re.sub(r'\s+', ' ', name.lower().replace('?', '')).strip()
-            if normalized_col == normalized_name or normalized_name in normalized_col:
-                if 'number' in normalized_col and 'number' not in normalized_name:
-                    continue
-                if 'id' in normalized_col and 'id' not in normalized_name:
-                    continue
-                return col
-    return None
-
 from core_accounts.decorators import allowed_roles, co_admin_or_higher_required
 from django.contrib.auth.decorators import login_required
 
@@ -75,29 +54,30 @@ def view_leaderboard(request):
     Tie-Breaker 1: Higher referral count wins.
     Tie-Breaker 2: Whoever reached the score first (last_score_update ASC) ranks higher.
 
-    Absolute ranks are assigned in Python before any search filter is applied,
-    so a searched subset always shows the correct global position.
+    Absolute ranks are assigned in the database using Window function.
     """
-    all_members = IEEEMember.objects.all().order_by(
-        '-total_points',
-        '-referral_count',
-        'last_score_update'
+    rated_members = IEEEMember.objects.annotate(
+        absolute_rank=Window(
+            expression=Rank(),
+            order_by=[
+                F('total_points').desc(),
+                F('referral_count').desc(),
+                F('last_score_update').asc(),
+            ]
+        )
     )
 
-    # Assign absolute rank to each member object in memory
-    ranked_members = []
-    for index, member in enumerate(all_members, start=1):
-        member.absolute_rank = index
-        ranked_members.append(member)
-
-    # Search — filters the pre-ranked list so ranks are preserved
-    search_query = request.GET.get('q', '').strip().lower()
+    search_query = request.GET.get('q', '').strip()
     if search_query:
-        ranked_members = [
-            m for m in ranked_members
-            if search_query in m.full_name.lower()
-            or search_query in m.ieee_number.lower()
-        ]
+        # Note: Depending on the database backend, applying a filter AFTER a Window annotation 
+        # might cause the DB to re-evaluate the Window over the filtered subset.
+        # Some backends or complex subqueries might preserve the absolute rank.
+        ranked_members = rated_members.filter(
+            Q(full_name__icontains=search_query) | 
+            Q(ieee_number__icontains=search_query)
+        ).order_by('absolute_rank')
+    else:
+        ranked_members = rated_members.order_by('absolute_rank')
 
     return render(request, 'leaderboard/leaderboard.html', {
         'leaderboard': ranked_members,
@@ -105,9 +85,10 @@ def view_leaderboard(request):
     })
 
 
-from django.contrib.auth.decorators import login_required
 from .models import BadgeAward
 
+@login_required(login_url='/admin/login/')
+@allowed_roles(allowed_roles=['main_admin', 'co_admin'])
 def badge_eligibility(request):
     """
     Dashboard automatically displays top members for upcoming badge distribution.
