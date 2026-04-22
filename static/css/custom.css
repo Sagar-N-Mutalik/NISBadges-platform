@@ -235,7 +235,7 @@ strong {
     border-right: 1px solid rgba(0, 0, 0, 0.06);
     transition: background-color 0.3s ease;
     padding: 20px 0;
-    z-index: 1045;
+    z-index: 1045 !important;
 }
 
 @media (min-width: 992px) {
@@ -248,12 +248,19 @@ strong {
         overflow-x: hidden;
         min-width: 240px;
         width: 240px;
-        z-index: 100;
+        z-index: 1040 !important;
     }
 
     .content-area {
-        margin-left: 240px;
-        width: calc(100% - 240px);
+        margin-left: 240px !important;
+        width: calc(100% - 240px) !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .content-area {
+        margin-left: 0 !important;
+        width: 100% !important;
     }
 }
 

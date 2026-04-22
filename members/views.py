@@ -2,8 +2,8 @@ import re
 import pandas as pd
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db import IntegrityError
 from .models import IEEEMember
-
 
 def clean_name(name):
     """
@@ -94,6 +94,7 @@ def upload_members(request):
             success_count = 0
             duplicate_count = 0
             pending_count = 0
+            conflict_count = 0
 
             # ── Row-by-row processing ───────────────────────────────────────
             for index, row in df.iterrows():
@@ -131,29 +132,40 @@ def upload_members(request):
                     return str(val) if pd.notna(val) else ''
 
                 # ── Insert or skip duplicate ────────────────────────────────
-                member, created = IEEEMember.objects.get_or_create(
-                    ieee_number=ieee_num,
-                    defaults={
-                        'full_name': cleaned_name,
-                        'gender':        safe_get(gender_col),
-                        'email':         email,
-                        'mobile_number': safe_get(phone_col),
-                        'branch':        safe_get(branch_col),
-                        'year':          safe_get(year_col),
-                    }
-                )
+                try:
+                    member, created = IEEEMember.objects.get_or_create(
+                        ieee_number=ieee_num,
+                        defaults={
+                            'full_name': cleaned_name,
+                            'gender':        safe_get(gender_col),
+                            'email':         email,
+                            'mobile_number': safe_get(phone_col),
+                            'branch':        safe_get(branch_col),
+                            'year':          safe_get(year_col),
+                        }
+                    )
 
-                if created:
-                    success_count += 1
-                else:
-                    duplicate_count += 1
+                    if created:
+                        success_count += 1
+                    else:
+                        duplicate_count += 1
+                except IntegrityError:
+                    conflict_count += 1
+                    continue
 
             # ── Summary message ─────────────────────────────────────────────
             summary = (
                 f"Import complete — {success_count} new members added"
                 + (f", {pending_count} without IEEE numbers (marked PENDING)" if pending_count else "")
-                + (f", {duplicate_count} duplicates skipped." if duplicate_count else ".")
+                + (f", {duplicate_count} duplicates skipped." if duplicate_count else "")
+                + (f", {conflict_count} rows failed due to email conflicts." if conflict_count else "")
             )
+            # Fix period ending if no conflicts
+            if summary.endswith(" skipped.") or summary.endswith(" conflicts."):
+                pass 
+            elif summary.endswith("added") or summary.endswith("PENDING)"):
+                summary += "."
+
             messages.success(request, summary)
 
         except Exception as e:
