@@ -1,6 +1,3 @@
-Here is the complete code for your `seed_users.py` file with all 21 team members from your original seed file, safely stripped of their hardcoded passwords:
-
-```python
 from django.core.management.base import BaseCommand
 from core_accounts.models import CoreUser
 
@@ -73,4 +70,3 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f'Created new user (locked): {email}'))
 
         self.stdout.write(self.style.SUCCESS('Successfully completed syncing users.'))
-```
